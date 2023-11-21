@@ -1,3 +1,8 @@
+
+from ms_identity_web.configuration import AADConfig
+from ms_identity_web import IdentityWebPython
+
+
 """
 Django settings for quickstartproject project.
 
@@ -30,6 +35,9 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+AAD_CONFIG = AADConfig.parse_json(file_path='aad.config.json')
+MS_IDENTITY_WEB = IdentityWebPython(AAD_CONFIG)
+ERROR_TEMPLATE = 'auth/{}.html' # for rendering 401 or other errors from msal_middleware
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
@@ -51,7 +59,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',                                 
     'django.contrib.auth.middleware.AuthenticationMiddleware',                   
     'django.contrib.messages.middleware.MessageMiddleware',                      
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',                    
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',  
+    'ms_identity_web.django.middleware.MsalMiddleware'       
 ]
 
 ROOT_URLCONF = 'quickstartproject.urls'
@@ -67,6 +76,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'quickstartproject.context_processors.context'
             ],
         },
     },

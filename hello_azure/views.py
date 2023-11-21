@@ -1,22 +1,34 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+import requests
+
+from django.conf import settings
+ms_identity_web = settings.MS_IDENTITY_WEB
+
+# def index(request):
+#     print('Request for index page received')
+#     return render(request, 'hello_azure/index.html')
+
 
 def index(request):
-    print('Request for index page received')
-    return render(request, 'hello_azure/index.html')
+    return render(request, "auth/status.html")
 
-@csrf_exempt
-def hello(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        
-        if name is None or name == '':
-            print("Request for hello page received with no name or blank name -- redirecting")
-            return redirect('index')
-        else:
-            print("Request for hello page received with name=%s" % name)
-            context = {'name': name }
-            return render(request, 'hello_azure/hello.html', context)
-    else:
-        return redirect('index')
+@ms_identity_web.login_required
+def token_details(request):
+    return render(request, 'auth/token.html')
+
+
+@ms_identity_web.login_required
+def call_ms_graph(request):
+    ms_identity_web.acquire_token_silently()
+    graph = 'https://graph.microsoft.com/v1.0/users'
+    authZ = f'Bearer {ms_identity_web.id_data._access_token}'
+    results = requests.get(graph, headers={'Authorization': authZ}).json()
+
+    # trim the results down to 5 and format them.
+    if 'value' in results:
+        results ['num_results'] = len(results['value'])
+        results['value'] = results['value'][:5]
+
+    return render(request, 'auth/call-graph.html', context=dict(results=results))
