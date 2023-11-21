@@ -1,7 +1,13 @@
-# Simple Digital Twin
-A fast and easy application to render your digital twin data. 
+# Azure Django Template
+Quick templates that deploy python applications for the enterprise. I'm keeping this as a baseline template to streamline deployment to Azure Web Services.
 
 A fork of [Deploy a Python (Django) web app to Azure App Service - Sample Application](https://github.com/Azure-Samples/msdocs-python-django-webapp-quickstart)
+
+## What makes this template different? 
+* Incorporates AAD form the start, no user/password login. 
+* TODO: all secrets come from env vars (for deployment in Azure App Service).
+* Data Science / Analytics focused
+    * Uses `conda` environments instead of pip invironments.
 
 ### Taking components from standard MS Azure Github Pages.
 * [Django / Microsoft Identity Platform](https://github.com/Azure-Samples/ms-identity-python-django-tutorial)
