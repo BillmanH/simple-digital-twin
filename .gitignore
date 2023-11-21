@@ -1,3 +1,9 @@
+# Key and config files:
+aad.config.json
+
+# VS Code rubbish
+.vscode/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
