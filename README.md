@@ -20,19 +20,18 @@ Save azure costs by running the application locally to test. Azure deployment to
 I'm using Miniconda in my local environment. However it works the same either way. 
 
 Steps to build your local environment in Miniconda (one time setup):
-1. `conda create -n digitaltwin` to create the environment.
-2. `pip install -r requirements.txt` to install the needed libraries. 
-3. `conda env config vars set SECRET_KEY=123abc` to set the default library.
-4. `python manage.py makemigrations`
-5. `python manage.py migrate`
-6. `python manage.py runserver`
+1. `conda create -n azurewebapp` to create the environment.
+2. `conda activate azurewebapp`
+3. `pip install -r requirements.txt` to install the needed libraries. 
+4. `conda env config vars set SECRET_KEY=123abc` to set the default library.
+5. `python manage.py makemigrations`
+6. `python manage.py migrate`
+7. `python manage.py runserver`
 
-# To configure Login with GH:
-1. `pip install git+https://github.com/azure-samples/ms-identity-python-utilities@main`
-2. Create your needed app registration and follow the instructions in the _usefull links_ below.
+# To configure Login with AAD:
+* Create your needed app registration and follow the instructions in the _usefull links_ below. That process isn't automated here.
 
 ## When you deploy to Azure
-
 For deployment to production, create an app setting, `SECRET_KEY`. Use this command to generate an appropriate value:
 
 ```shell
