@@ -2,6 +2,7 @@
 from ms_identity_web.configuration import AADConfig
 from ms_identity_web import IdentityWebPython
 
+import os
 
 """
 Django settings for quickstartproject project.
@@ -26,16 +27,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '1234567890'
+SECRET_KEY = os.getenv("SECRET_KEY","ERROR: `SECRET_KEY` NOT FOUND IN ENVIRONMENT VARIABLES")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG","ERROR: `DEBUG` NOT FOUND IN ENVIRONMENT VARIABLES")
 
 ALLOWED_HOSTS = []
 
 
 # Application definition
 AAD_CONFIG = AADConfig.parse_json(file_path='aad.config.json')
+AAD_CONFIG.client.client_id = os.getenv("AAD_CLIENT_ID","ERROR: `AAD_CLIENT_ID` NOT FOUND IN ENVIRONMENT VARIABLES")
+AAD_CONFIG.client.client_credential = os.getenv("AAD_CLIENT_CREDENTIAL","ERROR: `AAD_CLIENT_CREDENTIAL` NOT FOUND IN ENVIRONMENT VARIABLES")
+AAD_CONFIG.client.authority = f"https://login.microsoftonline.com/{os.getenv('AAD_TENANT_ID','ERROR: `AAD_TENANT_ID` NOT FOUND IN ENVIRONMENT VARIABLES')}"
+
 MS_IDENTITY_WEB = IdentityWebPython(AAD_CONFIG)
 ERROR_TEMPLATE = 'auth/{}.html' # for rendering 401 or other errors from msal_middleware
 

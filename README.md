@@ -23,12 +23,23 @@ Steps to build your local environment in Miniconda (one time setup):
 1. `conda create -n azurewebapp` to create the environment.
 2. `conda activate azurewebapp`
 3. `pip install -r requirements.txt` to install the needed libraries. 
-4. `conda env config vars set SECRET_KEY=123abc` to set the default library.
+4. Set the environment variables see section below.
 5. `python manage.py makemigrations`
 6. `python manage.py migrate`
 7. `python manage.py runserver`
 
-# To configure Login with AAD:
+## Setting environment variables (locally)
+You need to set the conda environment variables.
+`conda env config vars set SECRET_KEY=123abc` to set the env vars
+Here are the list of vars the system will need:
+* SECRET_KEY
+* DEBUG
+* AAD_CLIENT_ID
+* AAD_CLIENT_CREDENTIAL
+* AAD_TENANT_ID
+
+
+## To configure Login with AAD:
 * Create your needed app registration and follow the instructions in the _usefull links_ below. That process isn't automated here.
 
 ## When you deploy to Azure
