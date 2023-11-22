@@ -5,7 +5,7 @@ A fork of [Deploy a Python (Django) web app to Azure App Service - Sample Applic
 
 ## What makes this template different? 
 * Incorporates AAD form the start, no user/password login. 
-* TODO: all secrets come from env vars (for deployment in Azure App Service).
+* All secrets come from env vars (for deployment in Azure App Service).
 * Data Science / Analytics focused
     * Uses `conda` environments instead of pip invironments.
 
