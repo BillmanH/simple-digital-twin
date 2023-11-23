@@ -4,6 +4,8 @@ Quick templates that deploy python applications for the enterprise. I'm keeping 
 A fork of [Deploy a Python (Django) web app to Azure App Service - Sample Application](https://github.com/Azure-Samples/msdocs-python-django-webapp-quickstart)
 
 ## What makes this template different? 
+I usually spend a lot of time reconfiguring the MSFT base templates to run in an enterprise setting. This is my attempt to make it more turn-key. However, this is specific for my deployment style. Please let me know in the issues if you deploy differently. 
+
 * Incorporates AAD form the start, no user/password login. 
 * All secrets come from env vars (for deployment in Azure App Service).
 * Data Science / Analytics focused
@@ -37,6 +39,8 @@ Here are the list of vars the system will need:
 * AAD_CLIENT_ID
 * AAD_CLIENT_CREDENTIAL
 * AAD_TENANT_ID
+
+Confirm you have the correct variables with `conda env config vars list`
 
 
 ## To configure Login with AAD:
