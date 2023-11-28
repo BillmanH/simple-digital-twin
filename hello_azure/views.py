@@ -10,8 +10,10 @@ ms_identity_web = settings.MS_IDENTITY_WEB
 #     print('Request for index page received')
 #     return render(request, 'hello_azure/index.html')
 
-
 def index(request):
+    return render(request, "auth/status.html")
+
+def aad_example(request):
     return render(request, "auth/status.html")
 
 @ms_identity_web.login_required
