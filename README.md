@@ -46,12 +46,6 @@ Confirm you have the correct variables with `conda env config vars list`
 ## To configure Login with AAD:
 * Create your needed app registration and follow the instructions in the _usefull links_ below. That process isn't automated here.
 
-## When you deploy to Azure
-For deployment to production, create an app setting, `SECRET_KEY`. Use this command to generate an appropriate value:
-
-```shell
-python -c 'import secrets; print(secrets.token_hex())'
-```
 
 
 

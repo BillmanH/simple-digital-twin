@@ -6,9 +6,6 @@ import requests
 from django.conf import settings
 ms_identity_web = settings.MS_IDENTITY_WEB
 
-# def index(request):
-#     print('Request for index page received')
-#     return render(request, 'hello_azure/index.html')
 
 def index(request):
     return render(request, "auth/status.html")
