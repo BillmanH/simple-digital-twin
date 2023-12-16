@@ -6,6 +6,9 @@ import sys
 
 def main():
     """Run administrative tasks."""
+    if os.environ.get('ENVIRONMENT') != 'prod':
+        print('Running in Development environment')
+        print("** you need to route to `http://localhost:8000/` for the active directory components to work **")
 
     # When running in Azure, the WEBSITE_HOSTNAME environment variable is automatically set to
     # the URL of the app (e.g. msdocs-python-webapp-quickstart-123.azurewebsites.net)
