@@ -1,0 +1,25 @@
+#main_assets {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#anchor {
+    position: absolute;
+    top: 100px;
+    left: 200px;
+}
+
+#menubutton {
+    position: fixed;
+    top: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}

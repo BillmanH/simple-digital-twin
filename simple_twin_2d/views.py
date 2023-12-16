@@ -10,8 +10,8 @@ ms_identity_web = settings.MS_IDENTITY_WEB
 def index(request):
     return render(request, "auth/status.html")
 
-def aad_example(request):
-    return render(request, "auth/status.html")
+def twin_view_flat(request):
+    return render(request, "simple_twin_2d/twin_view_flat.html")
 
 @ms_identity_web.login_required
 def token_details(request):
