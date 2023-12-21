@@ -1,12 +1,12 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>Simple Twin 2D</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'simple_twin_2d.css' %}">
-</head>
+    {% include "general/head.html" %}
 <body>
     
 </body>
+<script>
+    var scene_id = {{ scene_id | safe }}
+    console.log("running on scene_id: ", scene_id)
+</script>
 </html>

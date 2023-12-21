@@ -1,0 +1,13 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        // You need to put in your own parameters here. Look in the template.json for the specifics. 
+        // "sites_exodestiny_name": {
+        //     "value": null
+        // },
+        // "serverfarms_ASP_exodestiny_8190_externalid": {
+        //     "value": null
+        // }
+    }
+}

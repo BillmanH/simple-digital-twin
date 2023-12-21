@@ -11,7 +11,12 @@ def index(request):
     return render(request, "auth/status.html")
 
 def twin_view_flat(request):
-    return render(request, "simple_twin_2d/twin_view_flat.html")
+    scene_id = request.GET.get('scene_id')
+    if scene_id:
+        return render(request, "simple_twin_2d/twin_view_flat.html", context={'scene_id': scene_id})
+    else:
+        return render(request, "simple_twin_2d/list_twins.html")
+    
 
 @ms_identity_web.login_required
 def token_details(request):

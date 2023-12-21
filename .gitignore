@@ -1,4 +1,6 @@
 # Key and config files:
+infra/demo/parameters.json
+
 
 # VS Code rubbish
 .vscode/*
