@@ -1,25 +1,53 @@
-# Azure Django Template
-Quick templates that deploy python applications for the enterprise. I'm keeping this as a baseline template to streamline deployment to Azure Web Services.
+# Simple Digital Twin application framework
+A simple, easy to deploy, easy to manage digital twin rendering and reporting platform. 
+* runs off of your data platform in Azure without copying
+* preference on easy access and use, as opposed to high quality visualization and cosmetics
+* designed for the enterprise
+* free and open source
+* built to be easy, scalable, and focus on solving business problems
 
-A fork of [Deploy a Python (Django) web app to Azure App Service - Sample Application](https://github.com/Azure-Samples/msdocs-python-django-webapp-quickstart)
 
-## What makes this template different? 
-I usually spend a lot of time reconfiguring the MSFT base templates to run in an enterprise setting. This is my attempt to make it more turn-key. However, this is specific for my deployment style. Please let me know in the issues if you deploy differently. 
+# Business Case
+Most digital twin platforms are built one at a time. You load a cad model into a virtual machine and then one at a time attach each part of your data into that model. Then repeat for the next use case. This is ideal for MVPs and POCs, but it is not an ideal workflow for the enterprise. 
 
+![Alt text](/docs/images/reasoning.png?raw=true "business case")
+
+
+
+## What makes this application different? 
+This application is the control and reporting plane for your digital twin data graph. You don't load data into it. You point connectors to your data graph, and your asset blobs. The application queries the graph to get the assets and data that it needs for real time rendering. 
+
+This assumes that you already have an ontology of your enterprise data, or are workign on one.  
+![Alt text](/docs/images/ontology_example.png?raw=true "business case")
+
+That ontolgoy will need to have:
+* a serchable hierarchy of objects
+* `asset`, `anchor`, and `boundry` nodes with relationships to your hierarchy.
+
+# Two ways of connecting your assets to your data
+
+
+
+# Application contents
+Bassic application features:
+* Django MCV framework
 * Incorporates AAD form the start, no user/password login. 
-* All secrets come from env vars (for deployment in Azure App Service).
-* Data Science / Analytics focused
-    * Uses `conda` environments instead of pip invironments.
+ 
+
+
+
 
 ### Taking components from standard MS Azure Github Pages.
 * [Django / Microsoft Identity Platform](https://github.com/Azure-Samples/ms-identity-python-django-tutorial)
 
-If you need an Azure account, you can [create one for free](https://azure.microsoft.com/en-us/free/).
+
+# For the Demo
+This is made to be an enterprise ready tool, not a POC or sales tool. However in order to validate the applications fitness I've created an example model for engineers to review. You can access this in `infra/demo`. 
+
 
 ## For local development
-Save azure costs by running the application locally to test. Azure deployment to follow TBD, but the origional MSFT repo above has these instructions. 
+Save azure costs by running the application locally to test. Azure deployment to follow TBD, but the original MSFT repo above has these instructions. 
 
-I'm using Miniconda in my local environment. However it works the same either way. 
 
 Steps to build your local environment in Miniconda (one time setup):
 1. `conda create -n azurewebapp` to create the environment.
@@ -44,11 +72,11 @@ Confirm you have the correct variables with `conda env config vars list`
 
 
 ## To configure Login with AAD:
-* Create your needed app registration and follow the instructions in the _usefull links_ below. That process isn't automated here.
+* Create your needed app registration and follow the instructions in the _useful links_ below. That process isn't automated here.
 
 
 
 
-## Usefull Links: 
+## Useful Links: 
 * [AAD login in Django](https://learn.microsoft.com/en-us/training/modules/msid-django-web-app-sign-in/) 
 * [Code examples of AAD](https://github.com/Azure-Samples/ms-identity-python-django-tutorial/blob/main/1-Authentication/sign-in/Sample/settings.py)
