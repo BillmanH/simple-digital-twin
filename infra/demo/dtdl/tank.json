@@ -1,0 +1,57 @@
+{
+    "@id": "dtmi:billmanh:tank;1",
+    "@type": "Interface",
+    "displayName": "Tank",
+    "extends": "dtmi:com:adt:dtsample:equipment;1",
+    "contents": [
+        {
+            "@type": "Property",
+            "name": "diameter",
+            "displayName": "diameter (cm)",
+            "schema": "double",
+            "comment": "diameter at center of the tank in centimeters"
+        },
+        {
+            "@type": "Property",
+            "name": "volume",
+            "displayName": "vol. (l)",
+            "schema": "double",
+            "comment": "maximum volume of the tank in liters"
+        },
+        {
+            "@type": "Property",
+            "name": "lat",
+            "displayName": "latitude",
+            "schema": "double",
+            "comment": "latitude of the place where item is located (can be used as offset y from the center aka x,y,z=0,0,0)"
+        },
+        {
+            "@type": "Property",
+            "name": "long",
+            "displayName": "logitude",
+            "schema": "double",
+            "comment": "longitude of the place where item is located (can be used as offset x from the center aka x,y,z=0,0,0)"
+        },
+        {
+            "@type": "Property",
+            "name": "elevation",
+            "displayName": "elevation",
+            "schema": "double",
+            "comment": "elevation of the place where item is located (can be used as offset x from the center aka x,y,z=0,0,0)"
+        },
+        {
+            "@type": "Relationship",
+            "name": "connectsTo",
+            "properties": [
+                {
+                    "@type": "Property",
+                    "name": "is_open",
+                    "schema": "boolean"
+                }
+            ]
+        }
+    ],
+    "@context": "dtmi:dtdl:context;2",
+    "comment": "A tank that holds fluid, and can be emptied into a pipe",
+    "description": "a tank for holding fluid"
+}

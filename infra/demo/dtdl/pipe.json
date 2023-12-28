@@ -1,0 +1,64 @@
+{
+    "@id": "dtmi:billmanh:pipe;1",
+    "@type": "Interface",
+    "displayName": "Pipe",
+    "extends": "dtmi:com:adt:dtsample:equipment;1",
+    "contents": [
+        {
+            "@type": "Property",
+            "name": "diameter",
+            "displayName": "diameter (cm)",
+            "schema": "double",
+            "comment": "diameter at center of the tank in centimeters"
+        },
+        {
+            "@type": "Property",
+            "name": "valve",
+            "displayName": "valve (pct)",
+            "schema": "double",
+            "comment": "percent of the valve that is currently open (1=open,0=closed)"
+        },
+        {
+            "@type": "Property",
+            "name": "capacity",
+            "displayName": "capacity (l)",
+            "schema": "double",
+            "comment": "total throughput of the pipe when the valve is open (valve=1)"            
+        },
+        {
+            "@type": "Property",
+            "name": "lat",
+            "displayName": "latitude",
+            "schema": "double",
+            "comment": "latitude of the place where item is located (can be used as offset x from the center aka x,y,z=0,0,0)"
+        },
+        {
+            "@type": "Property",
+            "name": "long",
+            "displayName": "logitude",
+            "schema": "double",
+            "comment": "longitude of the place where item is located (can be used as offset y from the center aka x,y,z=0,0,0)"
+        },
+        {
+            "@type": "Property",
+            "name": "elevation",
+            "displayName": "elevation",
+            "schema": "double",
+            "comment": "elevation of the place where item is located (can be used as offset z from the center aka x,y,z=0,0,0)"
+        },
+        {
+            "@type": "Relationship",
+            "name": "connectsTo",
+            "properties": [
+                {
+                    "@type": "Property",
+                    "name": "is_open",
+                    "schema": "boolean"
+                }
+            ]
+        }
+    ],
+    "@context": "dtmi:dtdl:context;2",
+    "comment": "A pipe that connects at both ends to either a pipe or a tank",
+    "description": "A pipe that connects at both ends to either a pipe or a tank"
+}
