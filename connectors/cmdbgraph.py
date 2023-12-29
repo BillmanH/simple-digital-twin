@@ -1,9 +1,7 @@
 import os,sys, ssl
 
 from functools import reduce
-import operator
 
-import yaml
 import numpy as np
 
 
@@ -12,6 +10,13 @@ from gremlin_python.driver.protocol import GremlinServerError
 
 
 import asyncio
+
+# NOTE: If you are running this in REPL (Like a jupyter notebook or IPython), then you need to add this code:
+# ssl._create_default_https_context = ssl._create_unverified_context
+# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+# import nest_asyncio
+# # this is required for running in a Jupyter Notebook. 
+# nest_asyncio.apply()
 
 
 if sys.platform == 'win32':
@@ -22,12 +27,9 @@ if sys.platform == 'win32':
 # Nodes must have expected values
 expectedProperties = ['label','objid','name']
 
-# Don't convert these to floats
-notFloats = ['id','objid','orbitsId','isSupportsLife','isPopulated','label']
-
 
 class GraphFormatError(Exception):
-    """exodestiny data structure error graph error message for cosmos/gremlin checks"""
+    """data structure error graph error message for cosmos/gremlin checks"""
     pass
 
 
@@ -36,12 +38,6 @@ class GraphFormatError(Exception):
 #     pass
 
 #%%
-# my Gremlin Model is like Django models in name only.
-# I'm creating a client object and connecting it to the 
-
-# NOTE: in order not to delay load times, try making small queries to populate the page first, 
-# then handle additional queries in `axajviews`. This will be better for the clint in the long run. 
-
 class CosmosdbClient():
     # TODO: build capability to 'upsert' nodes instead of drop and replace. 
     """s
@@ -63,9 +59,11 @@ class CosmosdbClient():
 
     """
     def __init__(self) -> None:
-        self.endpoint = os.getenv("endpoint","env vars not set")
-        self.username = os.getenv("dbusername","env vars not set")
-        self.password = os.getenv("dbkey","env vars not set")+"=="
+        self.endpoint = os.getenv("CMDB_URL","env vars not set")
+        self.username = os.getenv("CMDB_DATABASE","env vars not set")
+        # TODO: Conda commands don't work with the `==` keys, so I'm arbitrarily adding them here. This should be fixed later.
+        #       Meantime, you can just enter the key without the equal signs at the end. 
+        self.password = os.getenv("CMDB_KEY","env vars not set")+"=="
         self.c = None
         self.res = "no query"
         self.stack = []
@@ -141,62 +139,6 @@ class CosmosdbClient():
         return r
 
 
-
-    ## cleaning results
-    def cs(self, s):
-        # Clean String
-        s = (str(s).replace("'", "")
-                .replace("\\","-")
-            )
-        return s
-
-    def clean_node(self, x):
-        # For each value, return the last value in the array for that object. 
-        for k in list(x.keys()):
-            if type(x[k])==list:
-                x[k] = x[k][-1]
-        if 'objid' in x.keys():
-            x["id"] = x["objid"]
-        return x
-
-    def clean_nodes(self, nodes):
-        return [self.clean_node(n) for n in nodes]
-
-    def query_to_dict(self, res):
-        d = []
-        for r in res:
-            lab = {}
-            for itr,itm in enumerate(r['labels']):
-                lab[itm[0]] = self.clean_node(r['objects'][itr])
-            d.append(lab)
-        return d
-
-    def flatten(self, list_of_lists):
-        if len(list_of_lists) == 0:
-            return list_of_lists
-        if isinstance(list_of_lists[0], list):
-            return self.flatten(list_of_lists[0]) + self.flatten(list_of_lists[1:])
-        return list_of_lists[:1] + self.flatten(list_of_lists[1:])
-
-    def reduce_res(self, res):
-        fab = []
-        for n,r in enumerate(res): 
-            t = {}
-            labels = reduce(operator.concat, r['labels'])
-            objects = reduce(operator.concat, r['objects'])
-
-            for i,l in enumerate(labels):
-                try:
-                    t[l]=self.clean_node(objects[i])
-                except:
-                    print("had an issue with ,",i,l, objects)
-            fab.append(t)
-        return fab
-
-    def test_fields(self,data):
-        for n in data['nodes']:
-            n['id']=n['objid']
-        return data
 
     def create_custom_edge(self,n1,n2,label):
         edge = f"""
@@ -279,10 +221,3 @@ class CosmosdbClient():
         res = self.run_query(query)
         self.res = res 
 
-    def query_patch_properties(self, agent, action):
-        query = f"g.V().has('objid','{agent['objid']}')"
-        for n in yaml.safe_load(action["augments_self_properties"]):
-            query += f".property('{n}',{agent[n]})"
-
-        res = self.run_query(query)
-        self.res = res
