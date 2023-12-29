@@ -1,0 +1,6 @@
+﻿class,model_id,name,manufacturer,model_no,diameter,valve,capacity,volume,lat,long,elevation
+tank,dtmi:billmanh:tank;1,large_tank,ACME,1234,500,,,500,0,0,0
+tank,dtmi:billmanh:tank;1,small_tank,ACME,1234,100,,,200,0,0,0
+pipe,dtmi:billmanh:pipe;1,pipe1,ACME,2345,10,0,10,,0,0,0
+pipe,dtmi:billmanh:pipe;1,pipe2,ACME,2345,10,0,10,,0,0,0
+pipe,dtmi:billmanh:pipe;1,pipe3,ACME,2345,10,0,10,,0,0,0
