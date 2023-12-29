@@ -10,9 +10,7 @@ def main():
         print('Running in Development environment')
         print("** you need to route to `http://localhost:8000/` for the active directory components to work **")
 
-    # When running in Azure, the WEBSITE_HOSTNAME environment variable is automatically set to
-    # the URL of the app (e.g. msdocs-python-webapp-quickstart-123.azurewebsites.net)
-    settings_module = 'quickstartproject.production' if 'WEBSITE_HOSTNAME' in os.environ else 'quickstartproject.settings'
+    settings_module = 'app.production' if 'WEBSITE_HOSTNAME' in os.environ else 'app.settings'
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
 
     try:
