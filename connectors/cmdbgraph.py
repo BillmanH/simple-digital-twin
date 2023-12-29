@@ -12,11 +12,11 @@ from gremlin_python.driver.protocol import GremlinServerError
 import asyncio
 
 # NOTE: If you are running this in REPL (Like a jupyter notebook or IPython), then you need to add this code:
-# ssl._create_default_https_context = ssl._create_unverified_context
-# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-# import nest_asyncio
-# # this is required for running in a Jupyter Notebook. 
-# nest_asyncio.apply()
+ssl._create_default_https_context = ssl._create_unverified_context
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+import nest_asyncio
+# this is required for running in a Jupyter Notebook. 
+nest_asyncio.apply()
 
 
 if sys.platform == 'win32':
@@ -25,8 +25,8 @@ if sys.platform == 'win32':
 
 # ASSERTIONS: 
 # Nodes must have expected values
-expectedProperties = ['label','objid','name']
-
+expectedProperties = ['label','dtdlid','name']
+notFloats = ['dtdlid']
 
 class GraphFormatError(Exception):
     """data structure error graph error message for cosmos/gremlin checks"""
@@ -49,13 +49,13 @@ class CosmosdbClient():
 
     node format = {
         'label':'foo',
-        'objid':'00001',
+        'dtdlid':'00001',
         'name':'myname'
     }
     
 
     edge format = `{'node1':0000,'node2':0001,'label':'hasRelationship',...other properties}`
-        it's always the objid of the nodes, connecting to the objid of the ohter node. 
+        it's always the dtdlid of the nodes, connecting to the dtdlid of the ohter node. 
 
     """
     def __init__(self) -> None:
@@ -83,7 +83,16 @@ class CosmosdbClient():
     def close_client(self):
         self.c.close()
 
-    ## Managing the queries
+
+    ## cleaning results
+    def cs(self, s):
+        # Clean String
+        s = (str(s).replace("'", "")
+                .replace("\\","-")
+            )
+        return s
+    
+    ## Managing the queries 
     def run_query(self, query="g.V().count()"):
         self.open_client()
         callback = self.c.submitAsync(query)
@@ -93,7 +102,8 @@ class CosmosdbClient():
 
     def run_query_from_list(self, query="g.V().count()"):
         callback = self.c.submitAsync(query)
-        res = callback.result().all().result()
+        # res = callback.result().all().result()
+        res = callback
         self.res = res
 
     def add_query(self, query="g.V().count()"):
@@ -142,15 +152,17 @@ class CosmosdbClient():
 
     def create_custom_edge(self,n1,n2,label):
         edge = f"""
-        g.V().has('objid','{n1['objid']}')
+        g.V().has('dtdlid','{n1['dtdlid']}')
             .addE('{label}')
-            .to(g.V().has('objid','{n2['objid']}'))
+            .to(g.V().has('dtdlid','{n2['dtdlid']}'))
         """
         return edge
     
     # creating strings for uploading data
-    def create_vertex(self,node, username):
-        node['objid'] = str(node['objid'])
+    def create_vertex(self,node):
+        node['dtid'] = str(node['dtid'])
+        # TODO: objid here for backwards compatability. remove in next graphdb updeate.
+        node['objid'] = str(node['dtid'])
         if (len(
             [i for i in expectedProperties 
                 if i in list(node.keys())]
@@ -174,21 +186,19 @@ class CosmosdbClient():
             else:
                 substr = f".property('{k}','{self.cs(node[k])}')"
             gaddv += substr
-        if 'username' not in properties:
-            gaddv += f".property('username','{username}')"
 
         gaddv += f".property('objtype','{node['label']}')"
         return gaddv
 
-    def create_edge(self, edge, username):
-        gadde = f"g.V().has('objid','{edge['node1']}').addE('{self.cs(edge['label'])}').property('username','{username}')"
+    def create_edge(self, edge):
+        gadde = f"g.V().has('dtdlid','{edge['node1']}').addE('{self.cs(edge['label'])}')"
         for i in [j for j in edge.keys() if j not in ['label','node1','node2']]:
             gadde += f".property('{i}','{edge[i]}')"
-        gadde_fin = f".to(g.V().has('objid','{self.cs(edge['node2'])}'))"
+        gadde_fin = f".to(g.V().has('dtdlid','{self.cs(edge['node2'])}'))"
         return gadde + gadde_fin
 
 
-    def upload_data(self, username, data):
+    def upload_data(self, data, verbose=True):
         """
         uploads nodes and edges in a format `{"nodes":nodes,"edges":edges}`.
         edge format:
@@ -197,27 +207,36 @@ class CosmosdbClient():
         Extra items are piped in as properties of the edge.
         Note that edge lables don't show in a valuemap. So you need to add a 'name' to the properties if you want that info. 
         """
-        data = self.test_fields(data)
+        # TODO: I removed the field tests because it wasn't relefant. I'll add it back in at some point. 
+        # data = self.test_fields(data)
         for node in data["nodes"]:
-            n = self.create_vertex(node, username)
+            if verbose:
+                print(f'loading {node}')
+            n = self.create_vertex(node)
             self.add_query(n)
             if len(self.stack)>self.stacklimit:
                 self.run_queries()
+        if verbose:
+            print(" sending -> ",end=' ')
         self.run_queries()
+        if verbose:
+            print(' sent.')    
         for edge in data["edges"]:
-            e = self.create_edge(edge, username)
+            e = self.create_edge(edge)
             self.add_query(e)
             if len(self.stack)>self.stacklimit:
                 self.run_queries()
         self.run_queries()
 
-    def patch_property(self, objid, property, value):
+    def patch_property(self, dtdlid, property, value):
         """
         updates a specific property on a specific object
         """
         query = f"""
-        g.V().has('objid','{objid}').property('{property}','{value}')
+        g.V().has('dtdlid','{dtdlid}').property('{property}','{value}')
         """ 
         res = self.run_query(query)
         self.res = res 
 
+    def __repr__(self) -> str:
+        return f"<CBDB Graph Connector: >"
