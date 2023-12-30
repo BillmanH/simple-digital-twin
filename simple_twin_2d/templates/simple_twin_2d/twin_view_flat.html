@@ -3,10 +3,13 @@
 <html>
     {% include "general/head.html" %}
 <body>
-    
+    <canvas id="renderCanvas" touch-action="none"></canvas>
 </body>
 <script>
-    var scene_id = {{ scene_id | safe }}
+    var scene_id = "{{ scene_id | safe }}"
     console.log("running on scene_id: ", scene_id)
+
+    {% include "components/canvas.js" %}
 </script>
 </html>
+

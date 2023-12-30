@@ -11,6 +11,7 @@ def index(request):
     return render(request, "auth/status.html")
 
 def twin_view_flat(request):
+    # http://localhost:8000/simple_twin_2d/twin/?scene_id=pnid1
     scene_id = request.GET.get('scene_id')
     if scene_id:
         return render(request, "simple_twin_2d/twin_view_flat.html", context={'scene_id': scene_id})

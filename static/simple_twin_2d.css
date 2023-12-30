@@ -23,3 +23,8 @@
     justify-content: flex-start;
     align-items: center;
 }
+
+#renderCanvas {
+    width: 100%;
+    height: 100%;
+  }
