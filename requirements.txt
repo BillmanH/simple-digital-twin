@@ -2,6 +2,7 @@ Django
 whitenoise
 gremlinpython==3.5.1
 git+https://github.com/azure-samples/ms-identity-python-utilities@main
+pyyaml
 
-# Some extra libraries used in demo
+# Some extra libraries used in demo (not needed in the application)
 # pandas

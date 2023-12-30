@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
 
+import yaml
+
 from django.conf import settings
 ms_identity_web = settings.MS_IDENTITY_WEB
 
@@ -13,8 +15,11 @@ def index(request):
 def twin_view_flat(request):
     # http://localhost:8000/simple_twin_2d/twin/?scene_id=pnid1
     scene_id = request.GET.get('scene_id')
+    context={'scene_id': scene_id}
     if scene_id:
-        return render(request, "simple_twin_2d/twin_view_flat.html", context={'scene_id': scene_id})
+        scene_config = yaml.safe_load(open(f"configurations/{scene_id}.yaml"))
+        context['scene_config'] = scene_config
+        return render(request, "simple_twin_2d/twin_view_flat.html", context)
     else:
         return render(request, "simple_twin_2d/list_twins.html")
     
