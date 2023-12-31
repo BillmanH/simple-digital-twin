@@ -9,7 +9,6 @@ def main():
     if os.environ.get('ENVIRONMENT') != 'prod':
         print('Running in Development environment')
         print("** you need to route to `http://localhost:8000/` for the active directory components to work **")
-
     settings_module = 'app.production' if 'WEBSITE_HOSTNAME' in os.environ else 'app.settings'
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
 

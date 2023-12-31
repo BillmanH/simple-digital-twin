@@ -17,7 +17,7 @@ def twin_view_flat_3d(request):
     scene_id = request.GET.get('scene_id')
     context={'scene_id': scene_id}
     if scene_id:
-        scene_config = yaml.safe_load(open(f"configurations/{scene_id}.yaml"))
+        scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
         context['scene_config'] = scene_config
         return render(request, "simple_twin_2d/twin_view_flat_3d.html", context)
     else:
@@ -28,7 +28,7 @@ def twin_view_flat_2d(request):
     scene_id = request.GET.get('scene_id')
     context={'scene_id': scene_id}
     if scene_id:
-        scene_config = yaml.safe_load(open(f"configurations/{scene_id}.yaml"))
+        scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
         context['scene_config'] = scene_config
         return render(request, "simple_twin_2d/twin_view_flat_2d.html", context)
     else:
