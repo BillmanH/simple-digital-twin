@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
 
+import yaml
+
 from django.conf import settings
 ms_identity_web = settings.MS_IDENTITY_WEB
 
@@ -10,10 +12,25 @@ ms_identity_web = settings.MS_IDENTITY_WEB
 def index(request):
     return render(request, "auth/status.html")
 
-def twin_view_flat(request):
+def twin_view_flat_3d(request):
+    # http://localhost:8000/simple_twin_2d/twin/?scene_id=pnid1
     scene_id = request.GET.get('scene_id')
+    context={'scene_id': scene_id}
     if scene_id:
-        return render(request, "simple_twin_2d/twin_view_flat.html", context={'scene_id': scene_id})
+        scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
+        context['scene_config'] = scene_config
+        return render(request, "simple_twin_2d/twin_view_flat_3d.html", context)
+    else:
+        return render(request, "simple_twin_2d/list_twins.html")
+
+def twin_view_flat_2d(request):
+    # http://localhost:8000/simple_twin_2d/twin/?scene_id=pnid1
+    scene_id = request.GET.get('scene_id')
+    context={'scene_id': scene_id}
+    if scene_id:
+        scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
+        context['scene_config'] = scene_config
+        return render(request, "simple_twin_2d/twin_view_flat_2d.html", context)
     else:
         return render(request, "simple_twin_2d/list_twins.html")
     

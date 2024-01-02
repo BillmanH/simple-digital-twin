@@ -1,9 +1,7 @@
 import os,sys, ssl
 
 from functools import reduce
-import operator
 
-import yaml
 import numpy as np
 
 
@@ -13,6 +11,13 @@ from gremlin_python.driver.protocol import GremlinServerError
 
 import asyncio
 
+# NOTE: If you are running this in REPL (Like a jupyter notebook or IPython), then you need to add this code:
+ssl._create_default_https_context = ssl._create_unverified_context
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+import nest_asyncio
+# this is required for running in a Jupyter Notebook. 
+nest_asyncio.apply()
+
 
 if sys.platform == 'win32':
     print("executing local windows deployment")
@@ -20,14 +25,11 @@ if sys.platform == 'win32':
 
 # ASSERTIONS: 
 # Nodes must have expected values
-expectedProperties = ['label','objid','name']
-
-# Don't convert these to floats
-notFloats = ['id','objid','orbitsId','isSupportsLife','isPopulated','label']
-
+expectedProperties = ['label','dtdlid','name']
+notFloats = ['dtdlid']
 
 class GraphFormatError(Exception):
-    """exodestiny data structure error graph error message for cosmos/gremlin checks"""
+    """data structure error graph error message for cosmos/gremlin checks"""
     pass
 
 
@@ -36,12 +38,6 @@ class GraphFormatError(Exception):
 #     pass
 
 #%%
-# my Gremlin Model is like Django models in name only.
-# I'm creating a client object and connecting it to the 
-
-# NOTE: in order not to delay load times, try making small queries to populate the page first, 
-# then handle additional queries in `axajviews`. This will be better for the clint in the long run. 
-
 class CosmosdbClient():
     # TODO: build capability to 'upsert' nodes instead of drop and replace. 
     """s
@@ -53,19 +49,21 @@ class CosmosdbClient():
 
     node format = {
         'label':'foo',
-        'objid':'00001',
+        'dtdlid':'00001',
         'name':'myname'
     }
     
 
     edge format = `{'node1':0000,'node2':0001,'label':'hasRelationship',...other properties}`
-        it's always the objid of the nodes, connecting to the objid of the ohter node. 
+        it's always the dtdlid of the nodes, connecting to the dtdlid of the ohter node. 
 
     """
     def __init__(self) -> None:
-        self.endpoint = os.getenv("endpoint","env vars not set")
-        self.username = os.getenv("dbusername","env vars not set")
-        self.password = os.getenv("dbkey","env vars not set")+"=="
+        self.endpoint = os.getenv("CMDB_URL","env vars not set")
+        self.username = os.getenv("CMDB_DATABASE","env vars not set")
+        # TODO: Conda commands don't work with the `==` keys, so I'm arbitrarily adding them here. This should be fixed later.
+        #       Meantime, you can just enter the key without the equal signs at the end. 
+        self.password = os.getenv("CMDB_KEY","env vars not set")+"=="
         self.c = None
         self.res = "no query"
         self.stack = []
@@ -85,7 +83,16 @@ class CosmosdbClient():
     def close_client(self):
         self.c.close()
 
-    ## Managing the queries
+
+    ## cleaning results
+    def cs(self, s):
+        # Clean String
+        s = (str(s).replace("'", "")
+                .replace("\\","-")
+            )
+        return s
+    
+    ## Managing the queries 
     def run_query(self, query="g.V().count()"):
         self.open_client()
         callback = self.c.submitAsync(query)
@@ -95,7 +102,8 @@ class CosmosdbClient():
 
     def run_query_from_list(self, query="g.V().count()"):
         callback = self.c.submitAsync(query)
-        res = callback.result().all().result()
+        # res = callback.result().all().result()
+        res = callback
         self.res = res
 
     def add_query(self, query="g.V().count()"):
@@ -142,73 +150,19 @@ class CosmosdbClient():
 
 
 
-    ## cleaning results
-    def cs(self, s):
-        # Clean String
-        s = (str(s).replace("'", "")
-                .replace("\\","-")
-            )
-        return s
-
-    def clean_node(self, x):
-        # For each value, return the last value in the array for that object. 
-        for k in list(x.keys()):
-            if type(x[k])==list:
-                x[k] = x[k][-1]
-        if 'objid' in x.keys():
-            x["id"] = x["objid"]
-        return x
-
-    def clean_nodes(self, nodes):
-        return [self.clean_node(n) for n in nodes]
-
-    def query_to_dict(self, res):
-        d = []
-        for r in res:
-            lab = {}
-            for itr,itm in enumerate(r['labels']):
-                lab[itm[0]] = self.clean_node(r['objects'][itr])
-            d.append(lab)
-        return d
-
-    def flatten(self, list_of_lists):
-        if len(list_of_lists) == 0:
-            return list_of_lists
-        if isinstance(list_of_lists[0], list):
-            return self.flatten(list_of_lists[0]) + self.flatten(list_of_lists[1:])
-        return list_of_lists[:1] + self.flatten(list_of_lists[1:])
-
-    def reduce_res(self, res):
-        fab = []
-        for n,r in enumerate(res): 
-            t = {}
-            labels = reduce(operator.concat, r['labels'])
-            objects = reduce(operator.concat, r['objects'])
-
-            for i,l in enumerate(labels):
-                try:
-                    t[l]=self.clean_node(objects[i])
-                except:
-                    print("had an issue with ,",i,l, objects)
-            fab.append(t)
-        return fab
-
-    def test_fields(self,data):
-        for n in data['nodes']:
-            n['id']=n['objid']
-        return data
-
     def create_custom_edge(self,n1,n2,label):
         edge = f"""
-        g.V().has('objid','{n1['objid']}')
+        g.V().has('dtdlid','{n1['dtdlid']}')
             .addE('{label}')
-            .to(g.V().has('objid','{n2['objid']}'))
+            .to(g.V().has('dtdlid','{n2['dtdlid']}'))
         """
         return edge
     
     # creating strings for uploading data
-    def create_vertex(self,node, username):
-        node['objid'] = str(node['objid'])
+    def create_vertex(self,node):
+        node['dtid'] = str(node['dtid'])
+        # TODO: objid here for backwards compatability. remove in next graphdb updeate.
+        node['objid'] = str(node['dtid'])
         if (len(
             [i for i in expectedProperties 
                 if i in list(node.keys())]
@@ -232,21 +186,19 @@ class CosmosdbClient():
             else:
                 substr = f".property('{k}','{self.cs(node[k])}')"
             gaddv += substr
-        if 'username' not in properties:
-            gaddv += f".property('username','{username}')"
 
         gaddv += f".property('objtype','{node['label']}')"
         return gaddv
 
-    def create_edge(self, edge, username):
-        gadde = f"g.V().has('objid','{edge['node1']}').addE('{self.cs(edge['label'])}').property('username','{username}')"
+    def create_edge(self, edge):
+        gadde = f"g.V().has('dtdlid','{edge['node1']}').addE('{self.cs(edge['label'])}')"
         for i in [j for j in edge.keys() if j not in ['label','node1','node2']]:
             gadde += f".property('{i}','{edge[i]}')"
-        gadde_fin = f".to(g.V().has('objid','{self.cs(edge['node2'])}'))"
+        gadde_fin = f".to(g.V().has('dtdlid','{self.cs(edge['node2'])}'))"
         return gadde + gadde_fin
 
 
-    def upload_data(self, username, data):
+    def upload_data(self, data, verbose=True):
         """
         uploads nodes and edges in a format `{"nodes":nodes,"edges":edges}`.
         edge format:
@@ -255,34 +207,36 @@ class CosmosdbClient():
         Extra items are piped in as properties of the edge.
         Note that edge lables don't show in a valuemap. So you need to add a 'name' to the properties if you want that info. 
         """
-        data = self.test_fields(data)
+        # TODO: I removed the field tests because it wasn't relefant. I'll add it back in at some point. 
+        # data = self.test_fields(data)
         for node in data["nodes"]:
-            n = self.create_vertex(node, username)
+            if verbose:
+                print(f'loading {node}')
+            n = self.create_vertex(node)
             self.add_query(n)
             if len(self.stack)>self.stacklimit:
                 self.run_queries()
+        if verbose:
+            print(" sending -> ",end=' ')
         self.run_queries()
+        if verbose:
+            print(' sent.')    
         for edge in data["edges"]:
-            e = self.create_edge(edge, username)
+            e = self.create_edge(edge)
             self.add_query(e)
             if len(self.stack)>self.stacklimit:
                 self.run_queries()
         self.run_queries()
 
-    def patch_property(self, objid, property, value):
+    def patch_property(self, dtdlid, property, value):
         """
         updates a specific property on a specific object
         """
         query = f"""
-        g.V().has('objid','{objid}').property('{property}','{value}')
+        g.V().has('dtdlid','{dtdlid}').property('{property}','{value}')
         """ 
         res = self.run_query(query)
         self.res = res 
 
-    def query_patch_properties(self, agent, action):
-        query = f"g.V().has('objid','{agent['objid']}')"
-        for n in yaml.safe_load(action["augments_self_properties"]):
-            query += f".property('{n}',{agent[n]})"
-
-        res = self.run_query(query)
-        self.res = res
+    def __repr__(self) -> str:
+        return f"<CBDB Graph Connector: >"

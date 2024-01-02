@@ -1,0 +1,27 @@
+{
+    "@id": "dtmi:com:adt:dtsample:equipment;1",
+    "@type": "Interface",
+    "@context": "dtmi:dtdl:context;2",
+    "displayName": "equipment",
+    "contents": [
+        {
+            "@type": "Property",
+            "name": "model_no",
+            "displayName": "Model No.",
+            "schema": "double",
+            "comment": "model number of the equempent"
+        },
+        {
+            "@type": "Property",
+            "name": "name",
+            "schema": "string"
+        },
+        {
+            "@type": "Property",
+            "name": "manufacturer",
+            "displayName": "Manufacturer",
+            "schema": "string",
+            "comment": "name of the vendor or manufacturer"
+        }
+    ]
+}

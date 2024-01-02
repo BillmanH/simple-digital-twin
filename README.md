@@ -58,7 +58,7 @@ Steps to build your local environment in Miniconda (one time setup):
 6. `python manage.py migrate`
 7. `python manage.py runserver`
 
-## Setting environment variables (locally)
+### Setting environment variables (locally)
 You need to set the conda environment variables.
 `conda env config vars set SECRET_KEY=123abc` to set the env vars
 Here are the list of vars the system will need:
@@ -67,6 +67,9 @@ Here are the list of vars the system will need:
 * AAD_CLIENT_ID
 * AAD_CLIENT_CREDENTIAL
 * AAD_TENANT_ID
+
+For the connectors, see the [connectors readme doc](./connectors/connectors.md)
+
 
 Confirm you have the correct variables with `conda env config vars list`
 
