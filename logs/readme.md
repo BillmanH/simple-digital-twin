@@ -1,0 +1,2 @@
+# Log folder. 
+For logs. 
