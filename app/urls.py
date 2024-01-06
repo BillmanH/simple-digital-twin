@@ -25,7 +25,7 @@ msal_urls = MsalViews(settings.MS_IDENTITY_WEB).url_patterns()
 
 urlpatterns = [
     path('', include('simple_twin_2d.urls')),
-    path('admin/', admin.site.urls),
+
     path(f'{settings.AAD_CONFIG.django.auth_endpoints.prefix}/', include(msal_urls)),
     *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
 ]

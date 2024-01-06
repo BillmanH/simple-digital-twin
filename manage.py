@@ -3,7 +3,6 @@
 import os
 import sys
 
-
 def main():
     """Run administrative tasks."""
     if os.environ.get('ENVIRONMENT') != 'prod':

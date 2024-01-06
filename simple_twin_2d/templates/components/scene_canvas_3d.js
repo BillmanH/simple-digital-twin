@@ -17,7 +17,7 @@ const createScene = function () {
     
 
     const groundMat = new BABYLON.StandardMaterial("groundMat");
-    groundMat.diffuseTexture = new BABYLON.Texture("{% static 'assets/pnid1.png' %}")
+    groundMat.diffuseTexture = new BABYLON.Texture("{{ sas_url }}")
     ground.material = groundMat;
     
     scene.registerBeforeRender(function () {
