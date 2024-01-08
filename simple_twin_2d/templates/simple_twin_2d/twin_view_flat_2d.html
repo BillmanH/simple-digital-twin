@@ -2,14 +2,18 @@
 <!DOCTYPE html>
 <html>
     {% include "general/head.html" %}
-<body>
-    <canvas id="renderCanvas" touch-action="none"></canvas>
-</body>
-<script>
-    var scene_id = "{{ scene_id | safe }}"
-    console.log("running on scene_id: ", scene_id)
+<body height="100%">
+    <div id="container"></div>
+    <script>
+        var scene_height = window.innerHeight
+        var scene_width = window.innerWidth
 
-    {% include "components/scene_canvas_2d.js" %}
-</script>
+        
+        const image_sas = "{{ background_asset_sas|safe }}";
+        
+        // most of the business logic taken in other pages. 
+        {% include "components/scene_canvas_2d.js" %}
+    </script>
+</body>
 </html>
 

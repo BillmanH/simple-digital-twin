@@ -17,7 +17,7 @@ const createScene = function () {
     
 
     const groundMat = new BABYLON.StandardMaterial("groundMat");
-    groundMat.diffuseTexture = new BABYLON.Texture("{{ sas_url|safe }}")
+    groundMat.diffuseTexture = new BABYLON.Texture("{{ background_asset_sas|safe }}")
     ground.material = groundMat;
     
     scene.registerBeforeRender(function () {

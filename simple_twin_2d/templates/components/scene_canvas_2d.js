@@ -1,12 +1,13 @@
 {% load static %}
 
-const canvas = document.getElementById("renderCanvas");
-const context = canvas.getContext("2d");
 
-const image = new Image();
-image.src = "{% sas_url %}";
 
-image.onload = function() {
-    context.drawImage(image, 0, 0, canvas.width, canvas.height);
-};
 
+svg = d3.select('#container').append('svg')
+.attr('width', scene_width)
+.attr('height', scene_height)
+
+var myimage = svg.append('image')
+    .attr('xlink:href', image_sas)
+    .attr('width', scene_width)
+    .attr('height', scene_height)
