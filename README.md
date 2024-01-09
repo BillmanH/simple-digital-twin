@@ -67,6 +67,8 @@ Here are the list of vars the system will need:
 * AAD_CLIENT_ID
 * AAD_CLIENT_CREDENTIAL
 * AAD_TENANT_ID
+* AZURE_ACCOUNT_NAME
+* AZURE_STORAGE_KEY
 
 For the connectors, see the [connectors readme doc](./connectors/connectors.md)
 
@@ -77,7 +79,8 @@ Confirm you have the correct variables with `conda env config vars list`
 ## To configure Login with AAD:
 * Create your needed app registration and follow the instructions in the _useful links_ below. That process isn't automated here.
 
-
+# Testing: 
+`http://localhost:8000/simple_twin_2d/3d/twin/?scene_id=pnid1`
 
 
 ## Useful Links: 

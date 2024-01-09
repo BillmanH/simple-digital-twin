@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
-
 import yaml
+
+import connectors.azureblob as azb
 
 from django.conf import settings
 ms_identity_web = settings.MS_IDENTITY_WEB
@@ -12,11 +13,19 @@ ms_identity_web = settings.MS_IDENTITY_WEB
 def index(request):
     return render(request, "auth/status.html")
 
+def default_statics(context):
+    # appends common static files to context. Takes a dict and returns a dict. 
+    context['css_page'] = azb.fetch_sas_url("simple_twin_2d.css")
+    context['favicon'] = azb.fetch_sas_url("favicon.ico")
+    return context
+
 def twin_view_flat_3d(request):
-    # http://localhost:8000/simple_twin_2d/twin/?scene_id=pnid1
+    # http://localhost:8000/simple_twin_2d/3d/twin/?scene_id=pnid1
     scene_id = request.GET.get('scene_id')
-    context={'scene_id': scene_id}
+    context = default_statics({})
     if scene_id:
+        context['scene_id']=scene_id
+        context['background_asset_sas']=azb.fetch_sas_url(f"assets/{scene_id}.png")
         scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
         context['scene_config'] = scene_config
         return render(request, "simple_twin_2d/twin_view_flat_3d.html", context)
@@ -24,12 +33,14 @@ def twin_view_flat_3d(request):
         return render(request, "simple_twin_2d/list_twins.html")
 
 def twin_view_flat_2d(request):
-    # http://localhost:8000/simple_twin_2d/twin/?scene_id=pnid1
+    # http://localhost:8000/simple_twin_2d/2d/twin/?scene_id=pnid1
     scene_id = request.GET.get('scene_id')
-    context={'scene_id': scene_id}
+    context = default_statics({})
     if scene_id:
+        context['scene_id']=scene_id
         scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
         context['scene_config'] = scene_config
+        context['background_asset_sas']=azb.fetch_sas_url(f"assets/{scene_id}.png")
         return render(request, "simple_twin_2d/twin_view_flat_2d.html", context)
     else:
         return render(request, "simple_twin_2d/list_twins.html")
