@@ -15,14 +15,14 @@
             "name": "y",
             "displayName": "Y",
             "schema": "string",
-            "comment": "Y can be longitutde, however in some context it may be a local coordinate system"
+            "comment": "Y can be altitude, however in some context it may be a local coordinate system"
         },
         {
             "@type": "Property",
             "name": "Z",
             "displayName": "Location (Z)",
             "schema": "string",
-            "comment": "Location of the related equipment or sensor, locally relative to the boundary or asset Z"
+            "comment": "Z can be longitutde, however in some context it may be a local coordinate system"
         },
         {
             "@type": "Relationship",

@@ -11,13 +11,6 @@
             "comment": "Common name of the area"
         },
         {
-            "@type": "Property",
-            "name": "pupros",
-            "displayName": "purpose",
-            "schema": "string",
-            "comment": "General purpose of the area"
-        },
-        {
             "@type": "Relationship",
             "name": "has",
             "properties": [
