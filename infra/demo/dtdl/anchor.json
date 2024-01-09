@@ -1,0 +1,42 @@
+{
+    "@id": "dtmi:billmanh:anchor;1",
+    "@type": "Interface",
+    "displayName": "Anchor",
+    "contents": [
+        {
+            "@type": "Property",
+            "name": "local_x",
+            "displayName": "Location (X)",
+            "schema": "string",
+            "comment": "Location of the related equipment or sensor, locally relative to the boundary or asset X"
+        },
+        {
+            "@type": "Property",
+            "name": "local_y",
+            "displayName": "Location (Y)",
+            "schema": "string",
+            "comment": "Location of the related equipment or sensor, locally relative to the boundary or asset Y"
+        },
+        {
+            "@type": "Property",
+            "name": "local_z",
+            "displayName": "Location (Z)",
+            "schema": "string",
+            "comment": "Location of the related equipment or sensor, locally relative to the boundary or asset Z"
+        },
+        {
+            "@type": "Relationship",
+            "name": "has",
+            "properties": [
+                {
+                    "@type": "Property",
+                    "name": "relation_created",
+                    "schema": "Strig"
+                }
+            ]
+        }
+    ],
+    "@context": "dtmi:dtdl:context;2",
+    "comment": "",
+    "description": "An Anchor ties a physical piece of equipment to the digital space where it is rendered. The ancor should have a connection from a sensor or equipment, and a boundary or asset"
+}
