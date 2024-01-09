@@ -54,7 +54,7 @@ class dtdl:
             print(f'ERROR: no file found at : {path}')
             TemplateNotFoundError()
         return template
-  
+   
     def build_model(self):
         model = {}
         for ext in self.extensions:

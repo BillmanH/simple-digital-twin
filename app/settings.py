@@ -136,8 +136,8 @@ LOGGING = {
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-AZURE_STORAGE_KEY = os.environ.get('AZURE_STORAGE_KEY', False)+"==" # wierd env string issue
-AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME', False)
+AZURE_STORAGE_KEY = os.environ.get('AZURE_STORAGE_KEY', "ERROR: Azure Key not set in env vars")+"==" # wierd env string issue
+AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME', "ERROR: Azure Key not set in env vars")
 AZURE_STATIC_CONTAINER = os.environ.get('AZURE_STATIC_CONTAINER', 'static')
 AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'  # CDN URL
 STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_STATIC_CONTAINER}/'
