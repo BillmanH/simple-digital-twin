@@ -80,21 +80,3 @@ class dtdl:
         return(f"<dtdl object - {self.label}:{self.name}>")
 
 
-# c = CosmosdbClient()
-
-try:    
-    df = pd.read_csv(os.path.join('.','infra','demo','equipment.csv'))
-except:
-    df = pd.read_csv(os.path.join('equipment.csv'))
-
-dtdls = [dtdl(j) for j in df.to_dict('records')]
-d = dtdls[0]
-
-
-j = df.to_dict('records')[0]
-dtdl(j)
-
-
-json.load(open(os.path.join('.','dtdl',j['class']+'.json')))
-
-d.template['extends'].replace('dtmi:com:adt:dtsample:','').replace(';1','')

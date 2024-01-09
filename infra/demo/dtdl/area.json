@@ -17,7 +17,7 @@
                 {
                     "@type": "Property",
                     "name": "relation_created",
-                    "schema": "Strig"
+                    "schema": "String"
                 }
             ]
         }
