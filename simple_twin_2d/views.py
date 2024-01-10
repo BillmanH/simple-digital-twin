@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 import requests
 import yaml
 
-import connectors.azureblob as azb
+import connections.azureblob as azb
 
 from django.conf import settings
 ms_identity_web = settings.MS_IDENTITY_WEB
@@ -28,7 +28,7 @@ def twin_view_flat_3d(request):
         context['background_asset_sas']=azb.fetch_sas_url(f"assets/{scene_id}.png")
         scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
         context['scene_config'] = scene_config
-        return render(request, "simple_twin_2d/twin_view_flat_3d.html", context)
+        return render(request, "simple_twin_2d/ .html", context)
     else:
         return render(request, "simple_twin_2d/list_twins.html")
 

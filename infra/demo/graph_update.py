@@ -1,9 +1,12 @@
-import os
+# %%
+
+import os, sys
 import json
 import pandas as pd
 import numpy as np
 
-from ...connectors import cmdbgraph
+sys.path.append("..")
+from connections import cmdbgraph
 
 
 # TODO: Read these config vars from a config file
@@ -15,6 +18,7 @@ class TemplateNotFoundError(Exception):
     pass
 
 
+# %%
 
 class dtdl:
     def __init__(self, j):
@@ -80,3 +84,11 @@ class dtdl:
         return(f"<dtdl object - {self.label}:{self.name}>")
 
 
+# %%
+
+df = pd.read_excel('infra/demo/equipment.xlsx', sheet_name='equipment')
+# %%
+os.listdir('infra/demo')
+# %%
+rel = pd.read_excel('infra/demo/relationships.xlsx', sheet_name='relationships')
+# %%
