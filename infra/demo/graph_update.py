@@ -1,9 +1,12 @@
 # %%
 
+import ssl
+import asyncio
 import os, sys
 import json
 import pandas as pd
 import numpy as np
+import yaml
 
 sys.path.append("..")
 from connections import cmdbgraph
@@ -12,6 +15,7 @@ from connections import cmdbgraph
 # TODO: Read these config vars from a config file
 # Length of characters of the UUID
 DTDL_ID_LENGTH = 13
+MODELS_PATH = os.path.join('.','infra','demo','dtdl')
 
 class TemplateNotFoundError(Exception):
     print("no template was found with the correct name in the infra folder")
@@ -47,11 +51,11 @@ class dtdl:
         self.name = j['name'] 
 
     def uuid(self):
-        return "dtid:" + "".join([str(i) for i in np.random.choice(range(10), self.DTDL_ID_LENGTH)])
+        return self.input_dict.get('name','noName') + "".join([str(i) for i in np.random.choice(range(10), self.DTDL_ID_LENGTH)])
     
     def read_json(self,filename):
         # get load the template, and let the user know if the file is not found.
-        path = os.path.join('.','dtdl',filename + '.json')
+        path = os.path.join(MODELS_PATH,filename + '.json')
         try:
             template = json.load(open(path))
         except:
@@ -64,10 +68,15 @@ class dtdl:
         for ext in self.extensions:
             # TODO: Process is not truly recursive. This will need to be updated to allow recursively building extensions
             for k in ext.keys():
-                model[k] = ext[k]
+                model[k.lower()] = ext[k]
         # Finally, load the template for the object
         for t in self.template.keys():
-            model[t] = self.template[t]
+            if self.template[t]:
+                model[t.lower()] = self.template[t]
+
+        for t in self.input_dict.keys():
+            if self.input_dict[t] != None:
+                model[t] = self.input_dict[t]
 
         self.model = model
         # Attach a GUID for the object as dtdlid
@@ -77,18 +86,56 @@ class dtdl:
         # CosmosDB doesnt support nested objects very well, so we flattening the structure for the graph. 
         for item in self.model['contents']:
             if item['@type'] == "Property":
-                self.model[item['name']] = 'default: ' + item['displayName']
+                self.model[item['name']] = self.input_dict[t]
         self.model.pop('contents')
+
+    def get_node(self):
+        return self.model
         
     def __repr__(self):
         return(f"<dtdl object - {self.label}:{self.name}>")
+    
 
 
 # %%
 
-df = pd.read_excel('infra/demo/equipment.xlsx', sheet_name='equipment')
+eq = pd.read_excel('infra/demo/equipment.xlsx', sheet_name='Equipment').dropna(axis=0, subset='id').replace(np.nan, None, regex=True)
+rel = pd.read_excel('infra/demo/equipment.xlsx', sheet_name='Relationships')
+dtdls = [dtdl(i) for i in eq.to_dict('records')]
+
 # %%
-os.listdir('infra/demo')
+pd.DataFrame([d.get_node() for d in dtdls])
 # %%
-rel = pd.read_excel('infra/demo/relationships.xlsx', sheet_name='relationships')
+d = dtdl(eq.to_dict('records')[6])
+d.get_node()
+# %%
+dtdls[6].input_dict
+# %%
+# Uploading the models to the graph
+
+PARAMS = yaml.safe_load(open('infra/demo/cmdbkeys.yml'))
+# %%
+
+# ssl._create_default_https_context = ssl._create_unverified_context
+# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+# import nest_asyncio
+# # this is required for running in a Jupyter Notebook. 
+# nest_asyncio.apply()
+
+
+# %%
+c = cmdbgraph.CosmosdbClient(PARAMS['cosmosdb'])
+
+# c.run_query()
+# %%
+
+# %%
+rel['node1'] = rel['from'].apply(lambda x: [d for d in dtdls if d.get_node()['id']==x][0].get_node()['dtid'])
+rel['node2'] = rel['to'].apply(lambda x: [d for d in dtdls if d.get_node()['id']==x][0].get_node()['dtid'])
+rel['label'] = rel['name']
+rel
+# %%
+vertecies = [c.create_vertex(node) for node in [d.get_node() for d in dtdls]]
+# %%
+edges = [c.create_edge(edge) for edge in rel.to_dict('records')]
 # %%
