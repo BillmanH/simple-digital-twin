@@ -4,7 +4,8 @@ from django.views.decorators.csrf import csrf_exempt
 import requests
 import yaml
 
-import connectors.azureblob as azb
+import connections.azureblob as azb
+import connections.cmdbgraph as cmdb
 
 from django.conf import settings
 ms_identity_web = settings.MS_IDENTITY_WEB
@@ -20,27 +21,34 @@ def default_statics(context):
     return context
 
 def twin_view_flat_3d(request):
-    # http://localhost:8000/simple_twin_2d/3d/twin/?scene_id=pnid1
-    scene_id = request.GET.get('scene_id')
+    c = cmdb.CosmosdbClient()
+    # http://localhost:8000/simple_twin_2d/3d/twin/?boundary_id=boundary17529430240082
+    scene_id = request.GET.get('boundary_id')
     context = default_statics({})
     if scene_id:
         context['scene_id']=scene_id
-        context['background_asset_sas']=azb.fetch_sas_url(f"assets/{scene_id}.png")
-        scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
-        context['scene_config'] = scene_config
+        context['data'] = c.collect_anchors(scene_id)
+        context['asset'] = c.collect_asset(scene_id)
+        print(context['asset'])
+        context['background_asset_sas']=azb.fetch_sas_url(f"{context['asset'][3]}")
+        # scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
+        # context['scene_config'] = scene_config
         return render(request, "simple_twin_2d/twin_view_flat_3d.html", context)
     else:
         return render(request, "simple_twin_2d/list_twins.html")
 
 def twin_view_flat_2d(request):
-    # http://localhost:8000/simple_twin_2d/2d/twin/?scene_id=pnid1
-    scene_id = request.GET.get('scene_id')
+    # http://localhost:8000/simple_twin_2d/2d/twin/?boundary_id=boundary17529430240082
+    c = cmdb.CosmosdbClient()
+    scene_id = request.GET.get('boundary_id')
     context = default_statics({})
     if scene_id:
+        context['data'] = c.collect_anchors(scene_id)
+        context['asset'] = c.collect_asset(scene_id)
         context['scene_id']=scene_id
-        scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
-        context['scene_config'] = scene_config
-        context['background_asset_sas']=azb.fetch_sas_url(f"assets/{scene_id}.png")
+        context['background_asset_sas']=azb.fetch_sas_url(f"{context['asset'][3]}")
+        # scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
+        # context['scene_config'] = scene_config
         return render(request, "simple_twin_2d/twin_view_flat_2d.html", context)
     else:
         return render(request, "simple_twin_2d/list_twins.html")
