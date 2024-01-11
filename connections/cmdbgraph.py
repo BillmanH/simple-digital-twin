@@ -111,6 +111,7 @@ class CosmosdbClient():
         res = callback
         self.res = res
 
+    # TODO: Running this on the 
     def collect_anchors(self, scene_id):
         query = f"""g.V().has('dtid','{scene_id}').as('boundary')
                 .in().has('label','area').as('area')
@@ -130,7 +131,7 @@ class CosmosdbClient():
         return res
 
     def collect_asset(self, scene_id):
-        query = f"g.V().has('dtid','{scene_id}').in('isin').has('label','asset').valuemap()"
+        query = f"g.V().has('dtid','{scene_id}').in('isin').has('label','asset').as('asset').values('label','name','storage_type','storage_path','type')"
         self.open_client()
         callback = self.c.submitAsync(query)
         res = callback.result().all().result()

@@ -27,9 +27,10 @@ def twin_view_flat_3d(request):
     context = default_statics({})
     if scene_id:
         context['scene_id']=scene_id
-        context['background_asset_sas']=azb.fetch_sas_url(f"assets/{scene_id}.png")
         context['data'] = c.collect_anchors(scene_id)
         context['asset'] = c.collect_asset(scene_id)
+        print(context['asset'])
+        context['background_asset_sas']=azb.fetch_sas_url(f"{context['asset'][3]}")
         # scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
         # context['scene_config'] = scene_config
         return render(request, "simple_twin_2d/twin_view_flat_3d.html", context)
@@ -42,10 +43,10 @@ def twin_view_flat_2d(request):
     scene_id = request.GET.get('boundary_id')
     context = default_statics({})
     if scene_id:
-        context['scene_id']=scene_id
-        context['background_asset_sas']=azb.fetch_sas_url(f"assets/{scene_id}.png")
         context['data'] = c.collect_anchors(scene_id)
         context['asset'] = c.collect_asset(scene_id)
+        context['scene_id']=scene_id
+        context['background_asset_sas']=azb.fetch_sas_url(f"{context['asset'][3]}")
         # scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
         # context['scene_config'] = scene_config
         return render(request, "simple_twin_2d/twin_view_flat_2d.html", context)

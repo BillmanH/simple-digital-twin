@@ -10,7 +10,10 @@
 
         
         const image_sas = "{{ background_asset_sas|safe }}";
+        const asset = "{{ asset|safe }}";
+        const data = "{{ data|safe }}";
         
+
         // most of the business logic taken in other pages. 
         {% include "components/scene_canvas_2d.js" %}
     </script>
