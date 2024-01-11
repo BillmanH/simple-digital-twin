@@ -22,21 +22,21 @@ def default_statics(context):
 
 def twin_view_flat_3d(request):
     c = cmdb.CosmosdbClient()
-    # http://localhost:8000/simple_twin_2d/3d/twin/?scene_id=pnid1
+    # http://localhost:8000/simple_twin_2d/3d/twin/?scene_id=boundary17529430240082
     scene_id = request.GET.get('scene_id')
     context = default_statics({})
     if scene_id:
         context['scene_id']=scene_id
         context['background_asset_sas']=azb.fetch_sas_url(f"assets/{scene_id}.png")
-        scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
-        context['data'] = c.collect_anchors(scene_id)
-        context['scene_config'] = scene_config
+        # context['data'] = c.collect_anchors(scene_id)
+        # scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
+        # context['scene_config'] = scene_config
         return render(request, "simple_twin_2d/twin_view_flat_3d.html", context)
     else:
         return render(request, "simple_twin_2d/list_twins.html")
 
 def twin_view_flat_2d(request):
-    # http://localhost:8000/simple_twin_2d/2d/twin/?scene_id=pnid1
+    # http://localhost:8000/simple_twin_2d/2d/twin/?scene_id=boundary17529430240082
     scene_id = request.GET.get('scene_id')
     context = default_statics({})
     if scene_id:

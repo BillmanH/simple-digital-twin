@@ -50,7 +50,7 @@ Save azure costs by running the application locally to test. Azure deployment to
 
 
 Steps to build your local environment in Miniconda (one time setup):
-1. `conda create -n azurewebapp` to create the environment.
+1. `conda create -n azurewebapp python=3.8` to create the environment.
 2. `conda activate azurewebapp`
 3. `pip install -r requirements.txt` to install the needed libraries. 
 4. Set the environment variables see section below.
@@ -75,6 +75,7 @@ For the connectors, see the [connectors readme doc](./connectors/connectors.md)
 
 Confirm you have the correct variables with `conda env config vars list`
 
+* remove your env with `conda remove --name azurewebapp --all`
 
 ## To configure Login with AAD:
 * Create your needed app registration and follow the instructions in the _useful links_ below. That process isn't automated here.

@@ -11,12 +11,12 @@ from gremlin_python.driver.protocol import GremlinServerError
 
 import asyncio
 
-# NOTE: If you are running this in REPL (Like a jupyter notebook or IPython), then you need to add this code:
-ssl._create_default_https_context = ssl._create_unverified_context
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-import nest_asyncio
-# this is required for running in a Jupyter Notebook. 
-nest_asyncio.apply()
+# # NOTE: If you are running this in REPL (Like a jupyter notebook or IPython), then you need to add this code:
+# ssl._create_default_https_context = ssl._create_unverified_context
+# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+# import nest_asyncio
+# # this is required for running in a Jupyter Notebook. 
+# nest_asyncio.apply()
 
 
 if sys.platform == 'win32':
@@ -112,8 +112,7 @@ class CosmosdbClient():
         self.res = res
 
     def collect_anchors(self, scene_id):
-        query = f"""
-            g.V().has('dtid','{scene_id}').as('boundary')
+        query = f"""g.V().has('dtid','{scene_id}').as('boundary')
                 .in().has('label','area').as('area')
                 .in('isin').as('elements')
                 .in('has').as('anchor')
@@ -122,7 +121,7 @@ class CosmosdbClient():
                         .by(values('dtid','name','displayname').fold())
                         .by(values('dtid','name','displayname','description','manufacturer','model_no','volume').fold())
                         .by(values('dtid','local_x','local_y','local_z','volume').fold())
-        """
+                """.strip()
         self.open_client()
         callback = self.c.submitAsync(query)
         res = callback.result().all().result()
