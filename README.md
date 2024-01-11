@@ -13,7 +13,7 @@ Most digital twin platforms are built one at a time. You load a cad model into a
 ![Alt text](/docs/images/reasoning.png?raw=true "business case")
 
 ## What makes this application different? 
-The goal of this application is that you would set it up once, configure it, and then it would be able to operate over all of the data objects in your tenant via connectors and queries. Generally, applications of this nature tend to be silos. You create a virtual environment, you load one asset, you load some data and do all of that within that one application. Your next application requires the same amount of work. This makes factory of the future applications costly to develop. Instead, our applications connects to your data platform, where you are storing all of this data, and managing the workflow within your existing data platform. 
+The goal of this application is that you would set it up once, configure it, and then it would be able to operate over all the data objects in your tenant via connectors and queries. Generally, applications of this nature tend to be silos. You create a virtual environment, you load one asset, you load some data and do all of that within that one application. Your next application requires the same amount of work. This makes factory of the future applications costly to develop. Instead, our application connects to your data platform, where you are storing all of this data, and managing the workflow within your existing data platform. 
 ![Alt text](/docs/images/dataflow.png?raw=true "data flow")
 
 
@@ -24,7 +24,7 @@ This assumes that you already have an ontology of your enterprise data, or are w
 
 That ontolgoy will need to have:
 * a serchable hierarchy of objects
-* `asset`, `anchor`, and `boundry` nodes with relationships to your hierarchy.
+* `asset`, `anchor`, and `boundary` nodes with relationships to your hierarchy.
 
 # Two ways of connecting your assets to your data
 
@@ -76,7 +76,7 @@ For the connectors, see the [connectors readme doc](./connectors/connectors.md)
 
 Confirm you have the correct variables with `conda env config vars list`
 
-* remove your env with `conda remove --name azurewebapp --all`
+* Remove your env with `conda remove --name azurewebapp --all`
 
 ## To configure Login with AAD:
 * Create your needed app registration and follow the instructions in the _useful links_ below. That process isn't automated here.
