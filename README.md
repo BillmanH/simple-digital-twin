@@ -12,11 +12,11 @@ Most digital twin platforms are built one at a time. You load a cad model into a
 
 ![Alt text](/docs/images/reasoning.png?raw=true "business case")
 
+## What makes this application different? 
 The goal of this application is that you would set it up once, configure it, and then it would be able to operate over all of the data objects in your tenant via connectors and queries. Generally, applications of this nature tend to be silos. You create a virtual environment, you load one asset, you load some data and do all of that within that one application. Your next application requires the same amount of work. This makes factory of the future applications costly to develop. Instead, our applications connects to your data platform, where you are storing all of this data, and managing the workflow within your existing data platform. 
 ![Alt text](/docs/images/dataflow.png?raw=true "data flow")
 
 
-## What makes this application different? 
 This application is the control and reporting plane for your digital twin data graph. You don't load data into it. You point connectors to your data graph, and your asset blobs. The application queries the graph to get the assets and data that it needs for real time rendering. 
 
 This assumes that you already have an ontology of your enterprise data, or are workign on one.  
@@ -27,7 +27,6 @@ That ontolgoy will need to have:
 * `asset`, `anchor`, and `boundry` nodes with relationships to your hierarchy.
 
 # Two ways of connecting your assets to your data
-
 
 
 # Application contents
