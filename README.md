@@ -12,6 +12,8 @@ Most digital twin platforms are built one at a time. You load a cad model into a
 
 ![Alt text](/docs/images/reasoning.png?raw=true "business case")
 
+The goal of this application is that you would set it up once, configure it, and then it would be able to operate over all of the data objects in your tenant via connectors and queries. Generally, applications of this nature tend to be silos. You create a virtual environment, you load one asset, you load some data and do all of that within that one application. Your next application requires the same amount of work. This makes factory of the future applications costly to develop. Instead, our applications connects to your data platform, where you are storing all of this data, and managing the workflow within your existing data platform. 
+![Alt text](/docs/images/dataflow.png?raw=true "data flow")
 
 
 ## What makes this application different? 
