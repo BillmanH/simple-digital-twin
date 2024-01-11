@@ -7,7 +7,9 @@
 </body>
 <script>
     var scene_id = "{{ scene_id | safe }}"
+    var data = "{{ data | safe }}"
     console.log("running on scene_id: ", scene_id)
+    console.log(data)
 
     {% include "components/scene_canvas_3d.js" %}
 </script>

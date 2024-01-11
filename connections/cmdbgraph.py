@@ -129,6 +129,14 @@ class CosmosdbClient():
         self.res = res
         return res
 
+    def collect_asset(self, scene_id):
+        query = f"g.V().has('dtid','{scene_id}').in('isin').has('label','asset').valuemap()"
+        self.open_client()
+        callback = self.c.submitAsync(query)
+        res = callback.result().all().result()
+        self.close_client()
+        self.res = res
+        return res
 
     def add_query(self, query="g.V().count()"):
         self.stack.append(query)

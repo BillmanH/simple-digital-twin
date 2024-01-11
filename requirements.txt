@@ -2,7 +2,7 @@ django
 django-storages[azure]
 whitenoise
 numpy
-gremlinpython==3.5.1
+gremlinpython==3.7.0
 git+https://github.com/azure-samples/ms-identity-python-utilities@main
 pyyaml
 
