@@ -6,8 +6,11 @@
     <canvas id="renderCanvas" touch-action="none"></canvas>
 </body>
 <script>
-    var scene_id = "{{ scene_id | safe }}"
-    console.log("running on scene_id: ", scene_id)
+    const image_sas = "{{ background_asset_sas|safe }}";
+    const asset = "{{ asset|safe }}";
+    const data = "{{ data|safe }}";
+    console.log("running on scene_id: ", asset)
+    console.log(data)
 
     {% include "components/scene_canvas_3d.js" %}
 </script>

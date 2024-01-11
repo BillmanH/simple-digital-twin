@@ -35,10 +35,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'simple_twin_2d'
+    'simple_twin_2d',
+    'storages'
 ]
 
-MIDDLEWARE = [                                                                   
+MIDDLEWARE = [                                                                    
     'django.middleware.security.SecurityMiddleware',
     # Add whitenoise middleware after the security middleware             
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -136,14 +137,16 @@ LOGGING = {
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-AZURE_STORAGE_KEY = os.environ.get('AZURE_STORAGE_KEY', False)+"==" # wierd env string issue
-AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME', False)
+
+STATICFILES_STORAGE  = 'app.backend.AzureStaticStorage'
+AZURE_STORAGE_KEY = os.environ.get('AZURE_STORAGE_KEY', "AZURE_STORAGE_KEY-env-var-not-loaded")+"==" # wierd env string issue
+AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME', "AZURE_ACCOUNT_NAME-env-var-not-loaded")
+
 AZURE_STATIC_CONTAINER = os.environ.get('AZURE_STATIC_CONTAINER', 'static')
 AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'  # CDN URL
 STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_STATIC_CONTAINER}/'
-STATIC_ROOT = os.path.join("app", "static")
 
-STATICFILES_STORAGE  = 'app.backend.AzureStaticStorage'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

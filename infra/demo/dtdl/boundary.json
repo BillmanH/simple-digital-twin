@@ -1,0 +1,42 @@
+{
+    "@id": "dtmi:billmanh:anchor;1",
+    "@type": "Interface",
+    "displayName": "Boundary",
+    "contents": [
+        {
+            "@type": "Property",
+            "name": "x",
+            "displayName": "X",
+            "schema": "string",
+            "comment": "X can be latitude, however in some context it may be a local coordinate system"
+        },
+        {
+            "@type": "Property",
+            "name": "y",
+            "displayName": "Y",
+            "schema": "string",
+            "comment": "Y can be altitude, however in some context it may be a local coordinate system"
+        },
+        {
+            "@type": "Property",
+            "name": "Z",
+            "displayName": "Location (Z)",
+            "schema": "string",
+            "comment": "Z can be longitutde, however in some context it may be a local coordinate system"
+        },
+        {
+            "@type": "Relationship",
+            "name": "has",
+            "properties": [
+                {
+                    "@type": "Property",
+                    "name": "relation_created",
+                    "schema": "Strig"
+                }
+            ]
+        }
+    ],
+    "@context": "dtmi:dtdl:context;2",
+    "comment": "",
+    "description": "A physical context in the actual world, GIS, or other that tethers anchors and assets to a space in the physical world."
+}

@@ -11,12 +11,12 @@ from gremlin_python.driver.protocol import GremlinServerError
 
 import asyncio
 
-# NOTE: If you are running this in REPL (Like a jupyter notebook or IPython), then you need to add this code:
-ssl._create_default_https_context = ssl._create_unverified_context
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-import nest_asyncio
-# this is required for running in a Jupyter Notebook. 
-nest_asyncio.apply()
+# # NOTE: If you are running this in REPL (Like a jupyter notebook or IPython), then you need to add this code:
+# ssl._create_default_https_context = ssl._create_unverified_context
+# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+# import nest_asyncio
+# # this is required for running in a Jupyter Notebook. 
+# nest_asyncio.apply()
 
 
 if sys.platform == 'win32':
@@ -26,7 +26,7 @@ if sys.platform == 'win32':
 # ASSERTIONS: 
 # Nodes must have expected values
 expectedProperties = ['label','dtdlid','name']
-notFloats = ['dtdlid']
+notFloats = ['dtdlid','id','dtid','objid']
 
 class GraphFormatError(Exception):
     """data structure error graph error message for cosmos/gremlin checks"""
@@ -58,12 +58,17 @@ class CosmosdbClient():
         it's always the dtdlid of the nodes, connecting to the dtdlid of the ohter node. 
 
     """
-    def __init__(self) -> None:
-        self.endpoint = os.getenv("CMDB_URL","env vars not set")
-        self.username = os.getenv("CMDB_DATABASE","env vars not set")
-        # TODO: Conda commands don't work with the `==` keys, so I'm arbitrarily adding them here. This should be fixed later.
-        #       Meantime, you can just enter the key without the equal signs at the end. 
-        self.password = os.getenv("CMDB_KEY","env vars not set")+"=="
+    def __init__(self, localConfig=None) -> None:
+        if localConfig:
+            self.endpoint = localConfig['CMDB_URL']
+            self.username = localConfig['CMDB_DATABASE']
+            self.password = localConfig['CMDB_KEY']
+        else:
+            self.endpoint = os.getenv("CMDB_URL","env vars not set")
+            self.username = os.getenv("CMDB_DATABASE","env vars not set")
+            # TODO: Conda commands don't work with the `==` keys, so I'm arbitrarily adding them here. This should be fixed later.
+            #       Meantime, you can just enter the key without the equal signs at the end. 
+            self.password = os.getenv("CMDB_KEY","env vars not set")+"=="
         self.c = None
         self.res = "no query"
         self.stack = []
@@ -106,6 +111,34 @@ class CosmosdbClient():
         res = callback
         self.res = res
 
+    # TODO: Running this on the 
+    def collect_anchors(self, scene_id):
+        query = f"""g.V().has('dtid','{scene_id}').as('boundary')
+                .in().has('label','area').as('area')
+                .in('isin').as('elements')
+                .in('has').as('anchor')
+                    .path()
+                        .by(values('dtid','name','local_x','local_y','local_z').fold())
+                        .by(values('dtid','name','displayname').fold())
+                        .by(values('dtid','name','displayname','description','manufacturer','model_no','volume').fold())
+                        .by(values('dtid','local_x','local_y','local_z','volume').fold())
+                """.strip()
+        self.open_client()
+        callback = self.c.submitAsync(query)
+        res = callback.result().all().result()
+        self.close_client()
+        self.res = res
+        return res
+
+    def collect_asset(self, scene_id):
+        query = f"g.V().has('dtid','{scene_id}').in('isin').has('label','asset').as('asset').values('label','name','storage_type','storage_path','type')"
+        self.open_client()
+        callback = self.c.submitAsync(query)
+        res = callback.result().all().result()
+        self.close_client()
+        self.res = res
+        return res
+
     def add_query(self, query="g.V().count()"):
         self.stack.append(query)
 
@@ -119,6 +152,7 @@ class CosmosdbClient():
         self.stack = []
         self.close_client()
 
+    
     def parse_properties(self,node):
         """
         used in actions and other places where json is nested in properties. 
@@ -191,10 +225,10 @@ class CosmosdbClient():
         return gaddv
 
     def create_edge(self, edge):
-        gadde = f"g.V().has('dtdlid','{edge['node1']}').addE('{self.cs(edge['label'])}')"
+        gadde = f"g.V().has('dtid','{edge['node1']}').addE('{self.cs(edge['label'])}')"
         for i in [j for j in edge.keys() if j not in ['label','node1','node2']]:
             gadde += f".property('{i}','{edge[i]}')"
-        gadde_fin = f".to(g.V().has('dtdlid','{self.cs(edge['node2'])}'))"
+        gadde_fin = f".to(g.V().has('dtid','{self.cs(edge['node2'])}'))"
         return gadde + gadde_fin
 
 
@@ -240,3 +274,14 @@ class CosmosdbClient():
 
     def __repr__(self) -> str:
         return f"<CBDB Graph Connector: >"
+    
+
+# g.V().has('dtid','boundary17529430240082').as('boundary')
+# .in().has('label','area').as('area')
+# .in('isin').as('elements')
+# .in('has').as('anchor')
+#     .path()
+#         .by(values('dtid','name','local_x','local_y','local_z').fold())
+#         .by(values('dtid','name','displayname').fold())
+#         .by(values('dtid','name','displayname','description','manufacturer','model_no','volume').fold())
+#         .by(values('dtid','local_x','local_y','local_z','volume').fold())

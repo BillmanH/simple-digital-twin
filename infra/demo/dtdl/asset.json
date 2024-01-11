@@ -1,0 +1,42 @@
+{
+    "@id": "dtmi:billmanh:asset;1",
+    "@type": "Interface",
+    "displayName": "Asset",
+    "contents": [
+        {
+            "@type": "Property",
+            "name": "storage_type",
+            "displayName": "Storage Type",
+            "schema": "String",
+            "comment": "The type of storage used for the asset.  This can be a local file, a url, or a blob storage reference."
+        },
+        {
+            "@type": "Property",
+            "name": "storage_path",
+            "displayName": "Syorage Path",
+            "schema": "string",
+            "comment": "Path, URI, or URL of the digital asset"
+        },
+        {
+            "@type": "Property",
+            "name": "type",
+            "displayName": "Asset Type",
+            "schema": "String",
+            "comment": "Type of asset (e.g. CAD, png, jpg, gtlf, etc.)"
+        },
+        {
+            "@type": "Relationship",
+            "name": "has",
+            "properties": [
+                {
+                    "@type": "Property",
+                    "name": "relation_created",
+                    "schema": "String"
+                }
+            ]
+        }
+    ],
+    "@context": "dtmi:dtdl:context;2",
+    "comment": "",
+    "description": "An Asset is the reference to the 2d or 3d digital asset that is the represntation of a scene or a part of a scene."
+}

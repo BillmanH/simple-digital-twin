@@ -15,7 +15,7 @@ urlpatterns = [
     # Twin Views
     # path('/list_twins/', views.list_twins, name='list_twins'),
     path('simple_twin_2d/2d/twin/', views.twin_view_flat_2d, name='twin_view_flat_2d'),
-    path('simple_twin_2d/3d/twin/', views.twin_view_flat_2d, name='twin_view_flat_3d'),
+    path('simple_twin_2d/3d/twin/', views.twin_view_flat_3d, name='twin_view_flat_3d'),
 
     # Generic AAD Tests, not needed in production application
     path('token_details', views.token_details, name='token_details'),

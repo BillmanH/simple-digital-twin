@@ -2,10 +2,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Simple Twin 2D</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'simple_twin_2d.css' %}">
+    <link rel="stylesheet" type="text/css" href="{{ css_page|safe }}">
+    <link rel="icon" type="image/x-icon" href="{{ favicon|safe }}">
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
     <script src="https://cdn.babylonjs.com/gui/babylon.gui.js"></script>
+    <script src="//d3js.org/d3.v7.js"></script>
 </head>
 <script>
 //TODO put some script here

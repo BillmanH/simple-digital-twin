@@ -1,0 +1,28 @@
+{
+    "@id": "dtmi:billmanh:area;1",
+    "@type": "Interface",
+    "displayName": "Area",
+    "contents": [
+        {
+            "@type": "Property",
+            "name": "name",
+            "displayName": "Name",
+            "schema": "string",
+            "comment": "Common name of the area"
+        },
+        {
+            "@type": "Relationship",
+            "name": "has",
+            "properties": [
+                {
+                    "@type": "Property",
+                    "name": "relation_created",
+                    "schema": "String"
+                }
+            ]
+        }
+    ],
+    "@context": "dtmi:dtdl:context;2",
+    "comment": "",
+    "description": "An area is geographical boundary in real space."
+}

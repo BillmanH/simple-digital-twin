@@ -12,9 +12,11 @@ Most digital twin platforms are built one at a time. You load a cad model into a
 
 ![Alt text](/docs/images/reasoning.png?raw=true "business case")
 
-
-
 ## What makes this application different? 
+The goal of this application is that you would set it up once, configure it, and then it would be able to operate over all the data objects in your tenant via connectors and queries. Generally, applications of this nature tend to be silos. You create a virtual environment, you load one asset, you load some data and do all of that within that one application. Your next application requires the same amount of work. This makes factory of the future applications costly to develop. Instead, our application connects to your data platform, where you are storing all of this data, and managing the workflow within your existing data platform. 
+![Alt text](/docs/images/dataflow.png?raw=true "data flow")
+
+
 This application is the control and reporting plane for your digital twin data graph. You don't load data into it. You point connectors to your data graph, and your asset blobs. The application queries the graph to get the assets and data that it needs for real time rendering. 
 
 This assumes that you already have an ontology of your enterprise data, or are workign on one.  
@@ -22,10 +24,9 @@ This assumes that you already have an ontology of your enterprise data, or are w
 
 That ontolgoy will need to have:
 * a serchable hierarchy of objects
-* `asset`, `anchor`, and `boundry` nodes with relationships to your hierarchy.
+* `asset`, `anchor`, and `boundary` nodes with relationships to your hierarchy.
 
 # Two ways of connecting your assets to your data
-
 
 
 # Application contents
@@ -50,7 +51,7 @@ Save azure costs by running the application locally to test. Azure deployment to
 
 
 Steps to build your local environment in Miniconda (one time setup):
-1. `conda create -n azurewebapp` to create the environment.
+1. `conda create -n azurewebapp python=3.8` to create the environment.
 2. `conda activate azurewebapp`
 3. `pip install -r requirements.txt` to install the needed libraries. 
 4. Set the environment variables see section below.
@@ -67,17 +68,21 @@ Here are the list of vars the system will need:
 * AAD_CLIENT_ID
 * AAD_CLIENT_CREDENTIAL
 * AAD_TENANT_ID
+* AZURE_ACCOUNT_NAME
+* AZURE_STORAGE_KEY
 
 For the connectors, see the [connectors readme doc](./connectors/connectors.md)
 
 
 Confirm you have the correct variables with `conda env config vars list`
 
+* Remove your env with `conda remove --name azurewebapp --all`
 
 ## To configure Login with AAD:
 * Create your needed app registration and follow the instructions in the _useful links_ below. That process isn't automated here.
 
-
+# Testing: 
+`http://localhost:8000/simple_twin_2d/3d/twin/?scene_id=pnid1`
 
 
 ## Useful Links: 
