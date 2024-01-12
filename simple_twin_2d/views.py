@@ -41,15 +41,15 @@ def twin_view_flat_3d(request):
 def twin_view_flat_2d(request):
     # http://localhost:8000/simple_twin_2d/2d/twin/?boundary_id=boundary17529430240082
     c = cmdb.CosmosdbClient()
-    scene_id = request.GET.get('boundary_id')
+    boundary_id = request.GET.get('boundary_id')
     context = default_statics({})
-    if scene_id:
-        context['data'] = c.collect_anchors(scene_id)
-        context['asset'] = c.collect_asset(scene_id)
-        context['scene_id']=scene_id
-        context['background_asset_sas']=azb.fetch_sas_url(f"{context['asset'][3]}")
-        # scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
-        # context['scene_config'] = scene_config
+    context['scene_config'] = flat_3d_scene_config['rendering']
+    if boundary_id:
+        context['data'] = c.collect_anchors(boundary_id)
+        context['asset'] = c.collect_asset(boundary_id)
+        context['boundary_id']=boundary_id
+        context['background_asset_sas']=azb.fetch_sas_url(f"{context['asset'][0]['objects'][1][flat_3d_scene_config['node_context']['asset_path']][0]}")
+
         return render(request, "simple_twin_2d/twin_view_flat_2d.html", context)
     else:
         return render(request, "simple_twin_2d/list_twins.html")
