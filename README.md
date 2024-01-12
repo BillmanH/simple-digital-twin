@@ -7,9 +7,14 @@ A simple, easy to deploy, easy to manage digital twin rendering and reporting pl
 * built to be easy, scalable, and focus on solving business problems
 
 ## Demo Link
-Currenty:
+Currently:
 * [Flat file rendered in 3d, with current-state telemetry](https://app-simple-digital-twin.azurewebsites.net/simple_twin_2d/3d/twin/?boundary_id=boundary17529430240082)
 * [Flat file rendered in 3d, with current-state telemetry](https://app-simple-digital-twin.azurewebsites.net/simple_twin_2d/2d/twin/?boundary_id=boundary17529430240082)
+
+Comming Soon:
+* AI Chat With Data
+* 3d Model View
+* More variety and extensibility of shapes and rendering
 
 
 # Business Case
