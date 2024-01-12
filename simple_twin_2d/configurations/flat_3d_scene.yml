@@ -1,0 +1,39 @@
+node_context:
+  # item in the list, or key in the dict where the path can be retrieved from the `asset` node. 
+  asset_path: storage_path
+
+# Required, instructs the application how to get the data.
+query:
+  # The query to retrieve the nodes from the database.
+  query_connection: cosmosdb
+  # Note that the application requires an `asset_query` and a `data_query` to retrieve the nodes.
+  # Both of those queries must start from a `boudary_id`. 
+  asset_query: >
+    g.V().has('dtid','{boundary_id}').as('boundary')
+        .in('isin').has('label','asset').as('asset')
+            .path()
+                .by(valueMap('dtid','name','local_x','local_y','local_z'))
+                .by(valueMap('dtid','name','storage_path','type'))
+  data_query: >
+    g.V().has('dtid','{boundary_id}').as('boundary')
+          .in().has('label','area').as('area')
+          .in('isin').as('elements')
+          .in('has').as('anchor')
+              .path()
+                  .by(valueMap('dtid','name','local_x','local_y','local_z'))
+                  .by(valueMap('dtid','name','displayname'))
+                  .by(valueMap('dtid','name','displayname','description','manufacturer','model_no','volume'))
+                  .by(valueMap('dtid','local_x','local_y','local_z','volume')) \
+
+# Required, instructs the application how to build the scene.
+rendering:
+  # choose the property that devides the class of nodes. (e.g. `type` or `class`)
+  label: class
+  # Each type or class of node can have its own configuration.
+  # Notate the rendering type so that they are constructed in different ways. 
+  renders:
+    tank: simple-circle
+    pipe: simple-circle
+    # what to do with a discovered data object when it is not configured in the `renders`
+    default_render: console
+
