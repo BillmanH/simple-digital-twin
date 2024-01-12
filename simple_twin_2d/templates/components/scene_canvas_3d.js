@@ -13,7 +13,7 @@ const createScene = function () {
     camera.attachControl(canvas, true);
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
 
-    const ground = BABYLON.MeshBuilder.CreateGround("ground", {height: 1.5, width: 2.5, subdivisions: 4});
+    const ground = BABYLON.MeshBuilder.CreateGround("ground", {height: 1, width: 1, subdivisions: 4});
     
 
     const groundMat = new BABYLON.StandardMaterial("groundMat");
@@ -69,3 +69,5 @@ window.addEventListener('resize', () => {
 resizeCanvas(this._canvas);
 this._engine.resize();
 });
+
+
