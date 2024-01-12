@@ -3,6 +3,7 @@ node_context:
   asset_path: storage_path
 
 # Required, instructs the application how to get the data.
+# TODO: Queries are hard coded atm, will make extensible in a future release. 
 query:
   # The query to retrieve the nodes from the database.
   query_connection: cosmosdb
