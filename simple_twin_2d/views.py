@@ -21,6 +21,8 @@ def default_statics(context):
     context['favicon'] = azb.fetch_sas_url("favicon.ico")
     return context
 
+# TODO: Skipping ms_auth for the demo. Will need to add it back in.
+# @ms_identity_web.login_required
 def twin_view_flat_3d(request):
     # http://localhost:8000/simple_twin_2d/3d/twin/?boundary_id=boundary17529430240082
     boundary_id = request.GET.get('boundary_id')
@@ -30,6 +32,8 @@ def twin_view_flat_3d(request):
     if boundary_id:
         context['boundary_id']=boundary_id
         # `data` and `asset` are pulled from the graph.
+        # TODO: cmdb and other connectors should reverence the other module to keep this view generic
+        # cmdb and azb are hard coded here for simplicity.
         c = cmdb.CosmosdbClient()
         context['data'] = c.collect_anchors(boundary_id)
         context['asset'] = c.collect_asset(boundary_id)
@@ -39,6 +43,9 @@ def twin_view_flat_3d(request):
     else:
         return render(request, "simple_twin_2d/list_twins.html")
 
+
+# TODO: Skipping ms_auth for the demo. Will need to add it back in.
+# @ms_identity_web.login_required
 def twin_view_flat_2d(request):
     # http://localhost:8000/simple_twin_2d/2d/twin/?boundary_id=boundary17529430240082
     c = cmdb.CosmosdbClient()

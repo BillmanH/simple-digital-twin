@@ -57,9 +57,10 @@ function followCamBorderFunc(camera, ground){
 
 // Resizing
 function resizeCanvas (canvas) {
-    canvas.width = window.innerWidth;
+    // TODO: Fix resizing window issue. 
+    // canvas.width = window.innerWidth;
     // canvas.width = window.innerWidth - myDrawerWidth;
-    canvas.height = window.innerHeight;
+    // canvas.height = window.innerHeight;
     // canvas.height = window.innerHeight - (myHeaderHeight + myFooterHeight);
     }
 
