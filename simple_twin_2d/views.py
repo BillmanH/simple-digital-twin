@@ -24,7 +24,8 @@ def default_statics(context):
 def twin_view_flat_3d(request):
     # http://localhost:8000/simple_twin_2d/3d/twin/?boundary_id=boundary17529430240082
     boundary_id = request.GET.get('boundary_id')
-    context = default_statics({})
+    gui_on_off = request.GET.get('gui','off')
+    context = default_statics({'gui':gui_on_off})
     context['scene_config'] = flat_3d_scene_config['rendering']
     if boundary_id:
         context['boundary_id']=boundary_id

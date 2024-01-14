@@ -12,7 +12,11 @@
     console.log("running on boundary_id: ", asset)
     console.log(data)
 
+    {% include "components/globals_3d.js"}
     {% include "components/scene_canvas_3d.js" %}
+    {% if gui == "on" %}
+        {% include "components/gui_3d.js" %}
+    {% endif %}
     {% include "components/data_points_3d.js" %}
 </script>
 </html>
