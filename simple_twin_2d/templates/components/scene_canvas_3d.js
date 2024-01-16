@@ -11,6 +11,7 @@ const createScene = function () {
     camera.lowerRadiusLimit = 1 
     camera.upperRadiusLimit = 3 
     camera.attachControl(canvas, true);
+    camera.wheelPrecision = .05
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
 
     const ground = BABYLON.MeshBuilder.CreateGround("ground", {height: 1, width: 1, subdivisions: 4});
