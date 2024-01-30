@@ -3,17 +3,27 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
 import yaml
+import json
 
 import connections.azureblob as azb
 import connections.cmdbgraph as cmdb
 
 from django.conf import settings
+import json
 ms_identity_web = settings.MS_IDENTITY_WEB
 
 flat_3d_scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/flat_3d_scene.yml"))
 
 def index(request):
-    return render(request, "auth/status.html")
+    context = {'available_properties':flat_3d_scene_config['search_properties']['available_properties']}
+    return render(request, "simple_twin_2d/home_search.html", context)
+
+def search(request):
+    formData = json.loads(request.body.decode("utf-8"))
+    context = {'formData': formData}
+    
+    return HttpResponse(json.dumps(context), content_type="application/json")
+    
 
 def default_statics(context):
     # appends common static files to context. Takes a dict and returns a dict. 

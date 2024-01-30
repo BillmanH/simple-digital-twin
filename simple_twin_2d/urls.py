@@ -11,7 +11,8 @@ msal_urls = MsalViews(settings.MS_IDENTITY_WEB).url_patterns()
 urlpatterns = [
     # Root
     path('', views.index, name='index'),
-
+    path('search/', views.search, name='search'),
+    
     # Twin Views
     # path('/list_twins/', views.list_twins, name='list_twins'),
     path('simple_twin_2d/2d/twin/', views.twin_view_flat_2d, name='twin_view_flat_2d'),

@@ -26,6 +26,16 @@ query:
                   .by(valueMap('dtid','name','displayname','description','manufacturer','model_no','volume'))
                   .by(valueMap('dtid','local_x','local_y','local_z','volume')) \
 
+search_properties:
+  available_properties:
+  # A list of properties that you want to see in the search bar.
+    - name
+    - label
+    - displayname
+    - manufacturer
+    - description
+
+
 # Required, instructs the application how to build the scene.
 rendering:
   # choose the property that devides the class of nodes. (e.g. `type` or `class`)
