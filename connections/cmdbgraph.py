@@ -64,11 +64,11 @@ class CosmosdbClient():
             self.username = localConfig['CMDB_DATABASE']
             self.password = localConfig['CMDB_KEY']
         else:
-            self.endpoint = os.getenv("CMDB_URL","env vars not set")
-            self.username = os.getenv("CMDB_DATABASE","env vars not set")
+            self.endpoint = os.getenv("CMDB_URL","env-vars-not-set")
+            self.username = os.getenv("CMDB_DATABASE","env-vars-not-set")
             # TODO: Conda commands don't work with the `==` keys, so I'm arbitrarily adding them here. This should be fixed later.
             #       Meantime, you can just enter the key without the equal signs at the end. 
-            self.password = os.getenv("CMDB_KEY","env vars not set")+"=="
+            self.password = os.getenv("CMDB_KEY","env-vars-not-set")+"=="
         self.c = None
         self.res = "no query"
         self.stack = []
@@ -293,3 +293,10 @@ class CosmosdbClient():
 #         .by(valueMap('dtid','name','displayname'))
 #         .by(valueMap('dtid','name','displayname','description','manufacturer','model_no','volume'))
 #         .by(valueMap('dtid','local_x','local_y','local_z','volume'))
+    
+
+def property_search(search_key,search_value):
+    c = CosmosdbClient()
+    query = f"g.V().has('{search_key}','{search_value}').as('node').path().by(valueMap('dtid','name'))"
+    c.run_query(query)
+    return c.res

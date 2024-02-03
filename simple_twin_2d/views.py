@@ -18,18 +18,20 @@ def index(request):
     context = {'available_properties':flat_3d_scene_config['search_properties']['available_properties']}
     return render(request, "simple_twin_2d/home_search.html", context)
 
-def search(request):
-    formData = json.loads(request.body.decode("utf-8"))
-    context = {'formData': formData}
-    
-    return HttpResponse(json.dumps(context), content_type="application/json")
-    
-
 def default_statics(context):
     # appends common static files to context. Takes a dict and returns a dict. 
     context['css_page'] = azb.fetch_sas_url("simple_twin_2d.css")
     context['favicon'] = azb.fetch_sas_url("favicon.ico")
     return context
+
+def search(request):
+    formData = json.loads(request.body.decode("utf-8"))
+    context = default_statics({'gui':'off'})
+    context['formData'] = formData
+    res = cmdb.property_search(formData['search_key'], formData['search_value'])
+    context['search_results'] = res
+    return HttpResponse(json.dumps(context), content_type="application/json")
+    
 
 # TODO: Skipping ms_auth for the demo. Will need to add it back in.
 # @ms_identity_web.login_required
