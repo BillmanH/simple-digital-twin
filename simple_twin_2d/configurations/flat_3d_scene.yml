@@ -17,14 +17,12 @@ query:
                 .by(valueMap('dtid','name','storage_path','type'))
   data_query: >
     g.V().has('dtid','{boundary_id}').as('boundary')
-          .in().has('label','area').as('area')
-          .in('isin').as('elements')
-          .in('has').as('anchor')
-              .path()
-                  .by(valueMap('dtid','name','local_x','local_y','local_z'))
-                  .by(valueMap('dtid','name','displayname'))
-                  .by(valueMap('dtid','name','displayname','description','manufacturer','model_no','volume'))
-                  .by(valueMap('dtid','local_x','local_y','local_z','volume')) \
+      .in('isin').haslabel('anchor').as('anchor')	
+      .in('has').as('equipment')
+                  .path()
+                      .by(valueMap('dtid','name','local_x','local_y','local_z'))
+                      .by(valueMap('dtid','name','displayname','description','manufacturer','model_no','volume'))
+                      .by(valueMap('dtid','local_x','local_y','local_z')) 
 
 search_properties:
   available_properties:

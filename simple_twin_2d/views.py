@@ -50,7 +50,7 @@ def twin_view_flat_3d(request):
         # `data` and `asset` are pulled from the graph.
         # TODO: cmdb and other connectors should reverence the other module to keep this view generic
         # cmdb and azb are hard coded here for simplicity.
-        c = cmdb.CosmosdbClient()
+        c = cmdb.CosmosdbClient(flat_3d_scene_config['query'])
         context['data'] = c.collect_anchors(boundary_id)
         context['asset'] = c.collect_asset(boundary_id)
         # The path for the background asset is in the flat_3d_scene_config.yml file. 
@@ -64,7 +64,7 @@ def twin_view_flat_3d(request):
 # @ms_identity_web.login_required
 def twin_view_flat_2d(request):
     # http://localhost:8000/simple_twin_2d/2d/twin/?boundary_id=boundary10482074397538
-    c = cmdb.CosmosdbClient()
+    c = cmdb.CosmosdbClient(flat_3d_scene_config['query'])
     boundary_id = request.GET.get('boundary_id')
     context = default_statics({})
     context['scene_config'] = flat_3d_scene_config['rendering']
