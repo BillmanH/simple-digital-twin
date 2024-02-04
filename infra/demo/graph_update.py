@@ -8,14 +8,16 @@ import pandas as pd
 import numpy as np
 import yaml
 
-sys.path.append("..")
+sys.path.append('../..')
 from connections import cmdbgraph
 
 
 # TODO: Read these config vars from a config file
 # Length of characters of the UUID
 DTDL_ID_LENGTH = 13
-MODELS_PATH = os.path.join('.','infra','demo','dtdl')
+MODELS_PATH = os.path.join('dtdl')
+
+
 
 class TemplateNotFoundError(Exception):
     print("no template was found with the correct name in the infra folder")
@@ -99,8 +101,8 @@ class dtdl:
 
 # %%
 
-eq = pd.read_excel('infra/demo/equipment.xlsx', sheet_name='Equipment').dropna(axis=0, subset='id').replace(np.nan, None, regex=True)
-rel = pd.read_excel('infra/demo/equipment.xlsx', sheet_name='Relationships')
+eq = pd.read_excel('../demo/equipment.xlsx', sheet_name='Equipment').dropna(axis=0, subset='id').replace(np.nan, None, regex=True)
+rel = pd.read_excel('../demo/equipment.xlsx', sheet_name='Relationships')
 dtdls = [dtdl(i) for i in eq.to_dict('records')]
 
 # %%
@@ -111,23 +113,12 @@ d.get_node()
 # %%
 dtdls[6].input_dict
 # %%
-# Uploading the models to the graph
 
-PARAMS = yaml.safe_load(open('infra/demo/cmdbkeys.yml'))
-# %%
-
-# ssl._create_default_https_context = ssl._create_unverified_context
-# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-# import nest_asyncio
-# # this is required for running in a Jupyter Notebook. 
-# nest_asyncio.apply()
 
 
 # %%
-c = cmdbgraph.CosmosdbClient(PARAMS['cosmosdb'])
+c = cmdbgraph.CosmosdbClient()
 
-# c.run_query()
-# %%
 
 # %%
 rel['node1'] = rel['from'].apply(lambda x: [d for d in dtdls if d.get_node()['id']==x][0].get_node()['dtid'])
@@ -139,3 +130,5 @@ vertecies = [c.create_vertex(node) for node in [d.get_node() for d in dtdls]]
 # %%
 edges = [c.create_edge(edge) for edge in rel.to_dict('records')]
 # %%
+pd.DataFrame(vertecies).to_csv('vertecies.csv')
+pd.DataFrame(edges).to_csv('edges.csv')
