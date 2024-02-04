@@ -11,9 +11,10 @@ const createScene = function () {
     camera.lowerRadiusLimit = 1 
     camera.upperRadiusLimit = 3 
     camera.attachControl(canvas, true);
+    camera.wheelPrecision = .05
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
 
-    const ground = BABYLON.MeshBuilder.CreateGround("ground", {height: 1.5, width: 2.5, subdivisions: 4});
+    const ground = BABYLON.MeshBuilder.CreateGround("ground", {height: 1, width: 1, subdivisions: 4});
     
 
     const groundMat = new BABYLON.StandardMaterial("groundMat");
@@ -57,9 +58,10 @@ function followCamBorderFunc(camera, ground){
 
 // Resizing
 function resizeCanvas (canvas) {
-    canvas.width = window.innerWidth;
+    // TODO: Fix resizing window issue. 
+    // canvas.width = window.innerWidth;
     // canvas.width = window.innerWidth - myDrawerWidth;
-    canvas.height = window.innerHeight;
+    // canvas.height = window.innerHeight;
     // canvas.height = window.innerHeight - (myHeaderHeight + myFooterHeight);
     }
 
@@ -69,3 +71,5 @@ window.addEventListener('resize', () => {
 resizeCanvas(this._canvas);
 this._engine.resize();
 });
+
+

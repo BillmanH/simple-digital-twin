@@ -64,11 +64,11 @@ class CosmosdbClient():
             self.username = localConfig['CMDB_DATABASE']
             self.password = localConfig['CMDB_KEY']
         else:
-            self.endpoint = os.getenv("CMDB_URL","env vars not set")
-            self.username = os.getenv("CMDB_DATABASE","env vars not set")
+            self.endpoint = os.getenv("CMDB_URL","env-vars-not-set")
+            self.username = os.getenv("CMDB_DATABASE","env-vars-not-set")
             # TODO: Conda commands don't work with the `==` keys, so I'm arbitrarily adding them here. This should be fixed later.
             #       Meantime, you can just enter the key without the equal signs at the end. 
-            self.password = os.getenv("CMDB_KEY","env vars not set")+"=="
+            self.password = os.getenv("CMDB_KEY","env-vars-not-set")+"=="
         self.c = None
         self.res = "no query"
         self.stack = []
@@ -111,18 +111,19 @@ class CosmosdbClient():
         res = callback
         self.res = res
 
-    # TODO: Running this on the 
-    def collect_anchors(self, scene_id):
-        query = f"""g.V().has('dtid','{scene_id}').as('boundary')
-                .in().has('label','area').as('area')
-                .in('isin').as('elements')
-                .in('has').as('anchor')
-                    .path()
-                        .by(values('dtid','name','local_x','local_y','local_z').fold())
-                        .by(values('dtid','name','displayname').fold())
-                        .by(values('dtid','name','displayname','description','manufacturer','model_no','volume').fold())
-                        .by(values('dtid','local_x','local_y','local_z','volume').fold())
+
+    def collect_anchors(self, boundary_id):
+        query = f"""g.V().has('dtid','{boundary_id}').as('boundary')
+        .in().has('label','area').as('area')
+        .in('isin').as('elements')
+        .in('has').as('anchor')
+            .path()
+                .by(valueMap('dtid','name','local_x','local_y','local_z'))
+                .by(valueMap('dtid','name','displayname'))
+                .by(valueMap('dtid','name','displayname','description','manufacturer','model_no','volume'))
+                .by(valueMap('dtid','local_x','local_y','local_z','volume'))
                 """.strip()
+        print(query)
         self.open_client()
         callback = self.c.submitAsync(query)
         res = callback.result().all().result()
@@ -130,8 +131,15 @@ class CosmosdbClient():
         self.res = res
         return res
 
-    def collect_asset(self, scene_id):
-        query = f"g.V().has('dtid','{scene_id}').in('isin').has('label','asset').as('asset').values('label','name','storage_type','storage_path','type')"
+    def collect_asset(self, boundary_id):
+        query = f"""
+        g.V().has('dtid','{boundary_id}').as('boundary')
+            .in('isin').has('label','asset').as('asset')
+                .path()
+                    .by(valueMap('dtid','name','local_x','local_y','local_z'))
+                    .by(valueMap('dtid','name','storage_path','type'))
+        """.strip()
+        print(query)
         self.open_client()
         callback = self.c.submitAsync(query)
         res = callback.result().all().result()
@@ -281,7 +289,14 @@ class CosmosdbClient():
 # .in('isin').as('elements')
 # .in('has').as('anchor')
 #     .path()
-#         .by(values('dtid','name','local_x','local_y','local_z').fold())
-#         .by(values('dtid','name','displayname').fold())
-#         .by(values('dtid','name','displayname','description','manufacturer','model_no','volume').fold())
-#         .by(values('dtid','local_x','local_y','local_z','volume').fold())
+#         .by(valueMap('dtid','name','local_x','local_y','local_z'))
+#         .by(valueMap('dtid','name','displayname'))
+#         .by(valueMap('dtid','name','displayname','description','manufacturer','model_no','volume'))
+#         .by(valueMap('dtid','local_x','local_y','local_z','volume'))
+    
+
+def property_search(search_key,search_value):
+    c = CosmosdbClient()
+    query = f"g.V().has('{search_key}','{search_value}').as('node').path().by(valueMap('dtid','name'))"
+    c.run_query(query)
+    return c.res

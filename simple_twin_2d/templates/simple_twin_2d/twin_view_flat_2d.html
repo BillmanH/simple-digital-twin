@@ -10,11 +10,14 @@
 
         
         const image_sas = "{{ background_asset_sas|safe }}";
-        const asset = "{{ asset|safe }}";
-        const data = "{{ data|safe }}";
+        const asset = {{ asset|safe }};
+        const data = {{ data|safe }};
+        console.log("running on boundary_id: ", asset)
+        console.log(data)
         
 
         // most of the business logic taken in other pages. 
+        {% include "components/globals_2d.js" %}
         {% include "components/scene_canvas_2d.js" %}
     </script>
 </body>

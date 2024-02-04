@@ -3,16 +3,20 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
 import yaml
+import json
 
 import connections.azureblob as azb
 import connections.cmdbgraph as cmdb
 
 from django.conf import settings
+import json
 ms_identity_web = settings.MS_IDENTITY_WEB
 
+flat_3d_scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/flat_3d_scene.yml"))
 
 def index(request):
-    return render(request, "auth/status.html")
+    context = {'available_properties':flat_3d_scene_config['search_properties']['available_properties']}
+    return render(request, "simple_twin_2d/home_search.html", context)
 
 def default_statics(context):
     # appends common static files to context. Takes a dict and returns a dict. 
@@ -20,35 +24,52 @@ def default_statics(context):
     context['favicon'] = azb.fetch_sas_url("favicon.ico")
     return context
 
+def search(request):
+    formData = json.loads(request.body.decode("utf-8"))
+    context = default_statics({'gui':'off'})
+    context['formData'] = formData
+    res = cmdb.property_search(formData['search_key'], formData['search_value'])
+    context['search_results'] = res
+    return HttpResponse(json.dumps(context), content_type="application/json")
+    
+
+# TODO: Skipping ms_auth for the demo. Will need to add it back in.
+# @ms_identity_web.login_required
 def twin_view_flat_3d(request):
-    c = cmdb.CosmosdbClient()
     # http://localhost:8000/simple_twin_2d/3d/twin/?boundary_id=boundary17529430240082
-    scene_id = request.GET.get('boundary_id')
-    context = default_statics({})
-    if scene_id:
-        context['scene_id']=scene_id
-        context['data'] = c.collect_anchors(scene_id)
-        context['asset'] = c.collect_asset(scene_id)
-        print(context['asset'])
-        context['background_asset_sas']=azb.fetch_sas_url(f"{context['asset'][3]}")
-        # scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
-        # context['scene_config'] = scene_config
+    boundary_id = request.GET.get('boundary_id')
+    gui_on_off = request.GET.get('gui','off')
+    context = default_statics({'gui':gui_on_off})
+    context['scene_config'] = flat_3d_scene_config['rendering']
+    if boundary_id:
+        context['boundary_id']=boundary_id
+        # `data` and `asset` are pulled from the graph.
+        # TODO: cmdb and other connectors should reverence the other module to keep this view generic
+        # cmdb and azb are hard coded here for simplicity.
+        c = cmdb.CosmosdbClient()
+        context['data'] = c.collect_anchors(boundary_id)
+        context['asset'] = c.collect_asset(boundary_id)
+        # The path for the background asset is in the flat_3d_scene_config.yml file. 
+        context['background_asset_sas']=azb.fetch_sas_url(f"{context['asset'][0]['objects'][1][flat_3d_scene_config['node_context']['asset_path']][0]}")
         return render(request, "simple_twin_2d/twin_view_flat_3d.html", context)
     else:
         return render(request, "simple_twin_2d/list_twins.html")
 
+
+# TODO: Skipping ms_auth for the demo. Will need to add it back in.
+# @ms_identity_web.login_required
 def twin_view_flat_2d(request):
     # http://localhost:8000/simple_twin_2d/2d/twin/?boundary_id=boundary17529430240082
     c = cmdb.CosmosdbClient()
-    scene_id = request.GET.get('boundary_id')
+    boundary_id = request.GET.get('boundary_id')
     context = default_statics({})
-    if scene_id:
-        context['data'] = c.collect_anchors(scene_id)
-        context['asset'] = c.collect_asset(scene_id)
-        context['scene_id']=scene_id
-        context['background_asset_sas']=azb.fetch_sas_url(f"{context['asset'][3]}")
-        # scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/{scene_id}.yml"))
-        # context['scene_config'] = scene_config
+    context['scene_config'] = flat_3d_scene_config['rendering']
+    if boundary_id:
+        context['data'] = c.collect_anchors(boundary_id)
+        context['asset'] = c.collect_asset(boundary_id)
+        context['boundary_id']=boundary_id
+        context['background_asset_sas']=azb.fetch_sas_url(f"{context['asset'][0]['objects'][1][flat_3d_scene_config['node_context']['asset_path']][0]}")
+
         return render(request, "simple_twin_2d/twin_view_flat_2d.html", context)
     else:
         return render(request, "simple_twin_2d/list_twins.html")

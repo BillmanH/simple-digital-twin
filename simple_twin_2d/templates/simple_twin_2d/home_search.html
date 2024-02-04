@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    {% include "general/head.html" %}
+    <style>
+        h1, h2 {
+            font-family: Arial, sans-serif;
+        }
+    </style>
+<body>
+    <h1>Simple Digital Twin.</h1>
+    <h2>Separating data from application.</h2>
+    <div>
+        <label for="search1">Search for a property:</label>
+        <select id="search1" name="search1" onchange="updateFormData()">
+            {% for property in available_properties %}
+                <option value="{{ property }}">{{ property }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="search2">by value:</label>
+        <input type="text" id="search2" name="search2" onchange="updateFormData()">
+    </div>
+    <button onclick="submitFormData()">Search</button>
+    <script>
+        function updateFormData() {
+            var search1Value = document.getElementById("search1").value;
+            var search2Value = document.getElementById("search2").value;
+            window.formData = {
+                "search_key": search1Value,
+                "search_value": search2Value
+            };
+            console.log(formData);
+        }
+        
+        function submitFormData() {
+            fetch('/search/', {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
