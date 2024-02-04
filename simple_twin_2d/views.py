@@ -32,6 +32,10 @@ def search(request):
     context['search_results'] = res
     return HttpResponse(json.dumps(context), content_type="application/json")
     
+def create_boundary(request):
+    context = default_statics({'gui':'off'})
+    return render(request, "simple_twin_2d/boundary_builder.html", context)
+
 
 # TODO: Skipping ms_auth for the demo. Will need to add it back in.
 # @ms_identity_web.login_required

@@ -12,7 +12,8 @@ urlpatterns = [
     # Root
     path('', views.index, name='index'),
     path('search/', views.search, name='search'),
-    
+    path('create_boundary/', views.create_boundary, name='create_boundary'),
+
     # Twin Views
     # path('/list_twins/', views.list_twins, name='list_twins'),
     path('simple_twin_2d/2d/twin/', views.twin_view_flat_2d, name='twin_view_flat_2d'),
