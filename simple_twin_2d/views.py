@@ -40,7 +40,7 @@ def create_boundary(request):
 # TODO: Skipping ms_auth for the demo. Will need to add it back in.
 # @ms_identity_web.login_required
 def twin_view_flat_3d(request):
-    # http://localhost:8000/simple_twin_2d/3d/twin/?boundary_id=boundary17529430240082
+    # http://localhost:8000/simple_twin_2d/3d/twin/?boundary_id=boundary10482074397538
     boundary_id = request.GET.get('boundary_id')
     gui_on_off = request.GET.get('gui','off')
     context = default_statics({'gui':gui_on_off})
@@ -63,7 +63,7 @@ def twin_view_flat_3d(request):
 # TODO: Skipping ms_auth for the demo. Will need to add it back in.
 # @ms_identity_web.login_required
 def twin_view_flat_2d(request):
-    # http://localhost:8000/simple_twin_2d/2d/twin/?boundary_id=boundary17529430240082
+    # http://localhost:8000/simple_twin_2d/2d/twin/?boundary_id=boundary10482074397538
     c = cmdb.CosmosdbClient()
     boundary_id = request.GET.get('boundary_id')
     context = default_statics({})

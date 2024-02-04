@@ -20,3 +20,4 @@
 18,"g.V().has('dtid','anchor37223502560714').addE('isin').property('name','isin').property('from','8').property('to','14').to(g.V().has('dtid','boundary10482074397538'))"
 19,"g.V().has('dtid','anchor42637408115438').addE('isin').property('name','isin').property('from','9').property('to','14').to(g.V().has('dtid','boundary10482074397538'))"
 20,"g.V().has('dtid','anchor57013822618261').addE('isin').property('name','isin').property('from','10').property('to','14').to(g.V().has('dtid','boundary10482074397538'))"
+,"g.V().has('dtid','pnid17383409470971').addE('isin').property('name','isin').to(g.V().has('dtid','boundary10482074397538'))"
