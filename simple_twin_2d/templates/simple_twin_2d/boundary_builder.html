@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    {% include "general/head.html" %}
+    <style>
+        h1, h2 {
+            font-family: Arial, sans-serif;
+        }
+    </style>
+<body>
+    <h1>Boundary Builder.</h1>
+    <div id="container"></div>
+    <p>NOTE: This is provided for convenience so that you can build demos and one-off twins, however the design of this infrastructure is to build twins at scale. Building them one at a time in this UI defeats the purpose. Consider building twins in batch using common data platform tools instead of one at a time.</p>
+    <div>
+        <label for="asset_search">enter the path to your asset:</label>
+        <input type="text" id="asset_search" name="asset_search" onchange="updateFormData()">
+    </div>
+    <button onclick="assetSearchRequest()" type="submit">Search</button>
+    <script>
+        function updateFormData() {
+            var asset_search = document.getElementById("asset_search").value;
+            window.formData = {
+                "asset_search": asset_search
+            };
+            console.log(formData);
+        }
+        
+        function assetSearchRequest() {
+            fetch('/get_asset/', {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                d3.selectAll('svg').remove();
+                build_canvas(data['asset']);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+    <script>
+        {% include "components/boundary_builder.js" %}
+    </script>

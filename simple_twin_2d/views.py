@@ -31,7 +31,15 @@ def search(request):
     res = cmdb.property_search(formData['search_key'], formData['search_value'])
     context['search_results'] = res
     return HttpResponse(json.dumps(context), content_type="application/json")
-    
+
+def get_asset(request):
+    context = {}
+    request = json.loads(request.body.decode("utf-8"))
+    context['request'] = request
+    context['asset'] = azb.fetch_sas_url(request['asset_search'])
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
+
 def create_boundary(request):
     context = default_statics({'gui':'off'})
     return render(request, "simple_twin_2d/boundary_builder.html", context)
