@@ -281,8 +281,9 @@ class CosmosdbClient():
 #         .by(valueMap('dtid','local_x','local_y','local_z','volume'))
     
 
-def property_search(search_key,search_value):
-    c = CosmosdbClient()
-    query = f"g.V().has('{search_key}','{search_value}').as('node').path().by(valueMap('dtid','name'))"
+def property_search(query_conf,search_key,search_value):
+    c = CosmosdbClient(query_conf)
+    # TODO: Move the query to the query config
+    query = f"g.V().has('{search_key}',containing('{search_value}')).as('node').path().by(valueMap('dtid','name'))"
     c.run_query(query)
     return c.res

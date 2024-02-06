@@ -28,10 +28,12 @@ def search(request):
     formData = json.loads(request.body.decode("utf-8"))
     context = default_statics({'gui':'off'})
     context['formData'] = formData
-    res = cmdb.property_search(formData['search_key'], formData['search_value'])
+    res = cmdb.property_search(flat_3d_scene_config['query'], formData['search_key'], formData['search_value'])
     context['search_results'] = res
     return HttpResponse(json.dumps(context), content_type="application/json")
 
+
+# TODO: Methods called for the create_boundary view should be in a separate view file. 
 def get_asset(request):
     context = {}
     request = json.loads(request.body.decode("utf-8"))
