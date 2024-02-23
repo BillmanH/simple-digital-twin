@@ -24,6 +24,7 @@
     </div>
     <button onclick="submitFormData()">Search</button>
     <script>
+        {% include "components/search.js" %}
         function updateFormData() {
             var search1Value = document.getElementById("search1").value;
             var search2Value = document.getElementById("search2").value;
@@ -46,9 +47,11 @@
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
+                produce_searches(data);
             })
             .catch(error => {
                 console.error('Error:', error);
             });
         }
     </script>
+    <div id="search_results"></div>
