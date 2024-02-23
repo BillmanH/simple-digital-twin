@@ -11,12 +11,15 @@ msal_urls = MsalViews(settings.MS_IDENTITY_WEB).url_patterns()
 urlpatterns = [
     # Root
     path('', views.index, name='index'),
-
+    path('search/', views.search, name='search'),
+    path('create_boundary/', views.create_boundary, name='create_boundary'),
+    path('get_asset/', views.get_asset, name='get_asset'),
+    
     # Twin Views
     # path('/list_twins/', views.list_twins, name='list_twins'),
     path('simple_twin_2d/2d/twin/', views.twin_view_flat_2d, name='twin_view_flat_2d'),
     path('simple_twin_2d/3d/twin/', views.twin_view_flat_3d, name='twin_view_flat_3d'),
-
+    
     # Generic AAD Tests, not needed in production application
     path('token_details', views.token_details, name='token_details'),
     path('sign_in_status', views.index, name='status'),

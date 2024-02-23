@@ -3,17 +3,20 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
 import yaml
+import json
 
 import connections.azureblob as azb
 import connections.cmdbgraph as cmdb
 
 from django.conf import settings
+import json
 ms_identity_web = settings.MS_IDENTITY_WEB
 
 flat_3d_scene_config = yaml.safe_load(open(f"./simple_twin_2d/configurations/flat_3d_scene.yml"))
 
 def index(request):
-    return render(request, "auth/status.html")
+    context = {'available_properties':flat_3d_scene_config['search_properties']['available_properties']}
+    return render(request, "simple_twin_2d/home_search.html", context)
 
 def default_statics(context):
     # appends common static files to context. Takes a dict and returns a dict. 
@@ -21,15 +24,43 @@ def default_statics(context):
     context['favicon'] = azb.fetch_sas_url("favicon.ico")
     return context
 
+def search(request):
+    formData = json.loads(request.body.decode("utf-8"))
+    context = default_statics({'gui':'off'})
+    context['formData'] = formData
+    res = cmdb.property_search(flat_3d_scene_config['query'], formData['search_key'], formData['search_value'])
+    context['search_results'] = res
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
+
+# TODO: Methods called for the create_boundary view should be in a separate view file. 
+def get_asset(request):
+    context = {}
+    request = json.loads(request.body.decode("utf-8"))
+    context['request'] = request
+    context['asset'] = azb.fetch_sas_url(request['asset_search'])
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
+
+def create_boundary(request):
+    context = default_statics({'gui':'off'})
+    return render(request, "simple_twin_2d/boundary_builder.html", context)
+
+
+# TODO: Skipping ms_auth for the demo. Will need to add it back in.
+# @ms_identity_web.login_required
 def twin_view_flat_3d(request):
-    # http://localhost:8000/simple_twin_2d/3d/twin/?boundary_id=boundary17529430240082
+    # http://localhost:8000/simple_twin_2d/3d/twin/?boundary_id=boundary10482074397538
     boundary_id = request.GET.get('boundary_id')
-    context = default_statics({})
+    gui_on_off = request.GET.get('gui','off')
+    context = default_statics({'gui':gui_on_off})
     context['scene_config'] = flat_3d_scene_config['rendering']
     if boundary_id:
         context['boundary_id']=boundary_id
         # `data` and `asset` are pulled from the graph.
-        c = cmdb.CosmosdbClient()
+        # TODO: cmdb and other connectors should reverence the other module to keep this view generic
+        # cmdb and azb are hard coded here for simplicity.
+        c = cmdb.CosmosdbClient(flat_3d_scene_config['query'])
         context['data'] = c.collect_anchors(boundary_id)
         context['asset'] = c.collect_asset(boundary_id)
         # The path for the background asset is in the flat_3d_scene_config.yml file. 
@@ -38,9 +69,12 @@ def twin_view_flat_3d(request):
     else:
         return render(request, "simple_twin_2d/list_twins.html")
 
+
+# TODO: Skipping ms_auth for the demo. Will need to add it back in.
+# @ms_identity_web.login_required
 def twin_view_flat_2d(request):
-    # http://localhost:8000/simple_twin_2d/2d/twin/?boundary_id=boundary17529430240082
-    c = cmdb.CosmosdbClient()
+    # http://localhost:8000/simple_twin_2d/2d/twin/?boundary_id=boundary10482074397538
+    c = cmdb.CosmosdbClient(flat_3d_scene_config['query'])
     boundary_id = request.GET.get('boundary_id')
     context = default_statics({})
     context['scene_config'] = flat_3d_scene_config['rendering']

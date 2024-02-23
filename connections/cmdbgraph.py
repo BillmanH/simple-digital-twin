@@ -58,17 +58,18 @@ class CosmosdbClient():
         it's always the dtdlid of the nodes, connecting to the dtdlid of the ohter node. 
 
     """
-    def __init__(self, localConfig=None) -> None:
+    def __init__(self,query_config,localConfig=None) -> None:
         if localConfig:
             self.endpoint = localConfig['CMDB_URL']
             self.username = localConfig['CMDB_DATABASE']
             self.password = localConfig['CMDB_KEY']
         else:
-            self.endpoint = os.getenv("CMDB_URL","env vars not set")
-            self.username = os.getenv("CMDB_DATABASE","env vars not set")
+            self.endpoint = os.getenv("CMDB_URL","env-vars-not-set")
+            self.username = os.getenv("CMDB_DATABASE","env-vars-not-set")
             # TODO: Conda commands don't work with the `==` keys, so I'm arbitrarily adding them here. This should be fixed later.
             #       Meantime, you can just enter the key without the equal signs at the end. 
-            self.password = os.getenv("CMDB_KEY","env vars not set")+"=="
+            self.password = os.getenv("CMDB_KEY","env-vars-not-set")+"=="
+        self.query_config = query_config
         self.c = None
         self.res = "no query"
         self.stack = []
@@ -113,16 +114,7 @@ class CosmosdbClient():
 
 
     def collect_anchors(self, boundary_id):
-        query = f"""g.V().has('dtid','{boundary_id}').as('boundary')
-        .in().has('label','area').as('area')
-        .in('isin').as('elements')
-        .in('has').as('anchor')
-            .path()
-                .by(valueMap('dtid','name','local_x','local_y','local_z'))
-                .by(valueMap('dtid','name','displayname'))
-                .by(valueMap('dtid','name','displayname','description','manufacturer','model_no','volume'))
-                .by(valueMap('dtid','local_x','local_y','local_z','volume'))
-                """.strip()
+        query = self.query_config.get('data_query').replace('{boundary_id}',boundary_id).strip()
         print(query)
         self.open_client()
         callback = self.c.submitAsync(query)
@@ -132,13 +124,7 @@ class CosmosdbClient():
         return res
 
     def collect_asset(self, boundary_id):
-        query = f"""
-        g.V().has('dtid','{boundary_id}').as('boundary')
-            .in('isin').has('label','asset').as('asset')
-                .path()
-                    .by(valueMap('dtid','name','local_x','local_y','local_z'))
-                    .by(valueMap('dtid','name','storage_path','type'))
-        """.strip()
+        query = self.query_config.get('asset_query').replace('{boundary_id}',boundary_id).strip()
         print(query)
         self.open_client()
         callback = self.c.submitAsync(query)
@@ -293,3 +279,19 @@ class CosmosdbClient():
 #         .by(valueMap('dtid','name','displayname'))
 #         .by(valueMap('dtid','name','displayname','description','manufacturer','model_no','volume'))
 #         .by(valueMap('dtid','local_x','local_y','local_z','volume'))
+    
+
+def property_search(query_conf,search_key,search_value):
+    c = CosmosdbClient(query_conf)
+    # TODO: Move the query to the query config
+    query = f"""
+        g.V().has('{search_key}',containing('{search_value}')).as('node')
+        .out('has').haslabel('anchor').as('anchor')
+        .out('isin').haslabel('boundary').as('boundary')
+            .path()
+                .by(valueMap('label','displayname','comment','description'))
+                .by(valueMap('dtid'))
+                .by(valueMap('dtid','name','displayname','description'))
+    """
+    c.run_query(query)
+    return c.res
