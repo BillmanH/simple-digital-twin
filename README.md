@@ -36,7 +36,12 @@ That ontolgoy will need to have:
 * a serchable hierarchy of objects
 * `asset`, `anchor`, and `boundary` nodes with relationships to your hierarchy.
 
-# Two ways of connecting your assets to your data
+# Search
+![Alt text](/docs/images/search.png?raw=true "search feature")
+You can search for your tags, and get a list of the scenes or boundaries that contain those elements. 
+* You can partial search, which allows you to search using a unified namespace in your ids
+* Search fields in the _"Search for a property"_ is configurable in the `available_properties` of the config.yml file.
+* The result is each node that anchored to a boundary, meaning that it only returns elements that are in a scene.
 
 
 # Application contents
