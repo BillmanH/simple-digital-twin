@@ -23,6 +23,9 @@ AAD_CONFIG = AADConfig.parse_json(file_path='aad.config.json')
 AAD_CONFIG.client.client_id = os.getenv("AAD_CLIENT_ID","ERROR: `AAD_CLIENT_ID` NOT FOUND IN ENVIRONMENT VARIABLES")
 AAD_CONFIG.client.client_credential = os.getenv("AAD_CLIENT_CREDENTIAL","ERROR: `AAD_CLIENT_CREDENTIAL` NOT FOUND IN ENVIRONMENT VARIABLES")
 AAD_CONFIG.client.authority = f"https://login.microsoftonline.com/{os.getenv('AAD_TENANT_ID','ERROR: `AAD_TENANT_ID` NOT FOUND IN ENVIRONMENT VARIABLES')}"
+# For Forwarding to https instead of http
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 MS_IDENTITY_WEB = IdentityWebPython(AAD_CONFIG)
 ERROR_TEMPLATE = 'auth/{}.html' # for rendering 401 or other errors from msal_middleware
