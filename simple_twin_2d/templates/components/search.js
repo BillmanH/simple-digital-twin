@@ -17,7 +17,7 @@ function produce_searches(data){
 
         link = document.createElement('a');
         link.innerHTML = boundaryName;
-        link.href = 'http://localhost:8000/simple_twin_2d/2d/twin/?boundary_id=' + boundaryID;
+        link.href = '/simple_twin_2d/2d/twin/?boundary_id=' + boundaryID;
         
         // childNode.appendChild(link)
 
