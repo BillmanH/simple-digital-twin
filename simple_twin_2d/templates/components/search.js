@@ -15,14 +15,18 @@ function produce_searches(data){
         childNode.innerHTML = "displayname: " + nodeName + " <br> description: " + nodeID;
 
 
-        link = document.createElement('a');
-        link.innerHTML = boundaryName;
-        link.href = '/simple_twin_2d/2d/twin/?boundary_id=' + boundaryID;
-        
-        // childNode.appendChild(link)
+        link2d = document.createElement('a');
+        link2d.innerHTML = boundaryName + " 2D View";
+        link2d.href = '/simple_twin_2d/2d/twin/?boundary_id=' + boundaryID;
+
+        link3d = document.createElement('a');
+        link3d.innerHTML = boundaryName + " 3D View";
+        link3d.href = '/simple_twin_2d/3d/twin/?boundary_id=' + boundaryID;
 
         item.appendChild(childNode);
-        item.appendChild(link);
+        item.appendChild(link2d);
+        item.appendChild(document.createElement('p'));
+        item.appendChild(link3d);
         
         
     }
