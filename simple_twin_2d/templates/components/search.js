@@ -14,7 +14,6 @@ function produce_searches(data){
         var childNode = document.createElement('p');
         childNode.innerHTML = "displayname: " + nodeName + " <br> description: " + nodeID;
 
-
         link2d = document.createElement('a');
         link2d.innerHTML = boundaryName + " 2D View";
         link2d.href = '/simple_twin_2d/2d/twin/?boundary_id=' + boundaryID;
